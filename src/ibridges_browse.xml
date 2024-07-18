@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<tool tool_type="interactive" id="ibridges_browse" name="iBridges YODA browser" version="0.1.0+galaxy0" python_template_version="3.5" profile="21.05">
+
+    <requirements>
+        <container type="docker">ibridges_browse:latest</container>
+    </requirements>
+
+    <entry_points>
+        <entry_point name="ibridges browser" requires_domain="True">
+            <port>5000</port>
+            <url>/</url>
+        </entry_point>
+    </entry_points>
+
+    <environment_variables>
+        <environment_variable name="YODA_USER">$__user__.extra_preferences.get('irods_yoda|username', '')</environment_variable>
+        <environment_variable name="YODA_PASS">$__user__.extra_preferences.get('irods_yoda|password', '')</environment_variable>
+        <environment_variable name="IRODS_ENV_PATH">${__tool_directory__}/irods_environment.json</environment_variable>
+    </environment_variables>
+    <command><![CDATA[
+        ## The command will be templated by Cheetah within Galaxy, and
+        ## then run inside the Docker container!
+
+        ## This only works because Galaxy's user data directory is mapped
+        ## onto the Docker container at runtime - enabling access to
+        ## '$infile' and '$outfile' from inside the container.
+
+        ## The command below will override the CMD specified in the container's Dockerfile
+
+        python3 /app/yoda_browser.py;
+        cat /app/path > '$outfile'
+    ]]>
+    </command>
+    <inputs>
+    </inputs>
+    <outputs>
+        <data name="outfile" format="txt" label="YODA path"/>
+    </outputs>
+    <help>
+    </help>
+</tool>

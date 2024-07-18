@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>iBridges browser</title>
+</head>
+<style>
+.small {
+    font-size: 0.8em;
+}
+</style>
+<body>
+    <p>
+        Server has stopped
+        (you can close this window)
+    </p>
+    {% if not data.shutdown %}
+    <p class="small">
+        (selected path: {{ data.irods_path }})
+    </p>
+    {% endif %}
+</body>
+</html>

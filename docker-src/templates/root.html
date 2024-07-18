@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>iBridges browser</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="{{ url_for('static', filename='js/jquery-3.7.1.min.js') }}" charset="utf-8"></script> 
+</head>
+<body>
+    <script>
+        var currentPath = "";
+
+        function message(msg) {
+            $('#msg').html(msg).show().fadeOut(1500);
+        }
+
+        function setCurrentPath(path) {
+            currentPath = path;
+        }
+
+        function copyPath() {
+            var tmp = $('<input>');
+            $('body').append(tmp);
+            tmp.val(currentPath).select();
+            document.execCommand('copy');
+            tmp.remove();
+            message('Path copied.');
+        }
+    </script>
+
+    <table>
+        <tr><td>Server:</td><td>{{ data.env.irods_host }}</td></tr>
+        <tr><td>User:</td><td>{{ data.env.irods_user_name }}</td></tr>
+        <tr><td>Home:</td><td>{{ data.env.irods_home }}</td></tr>
+        <tr><td>.env file:</td><td>{{ data.irods_env_path }}</td></tr>    
+    </table>
+
+    <p class="breadcrumbs">
+        {%- for part in data.root_parts -%}{%- if part[0]==data.root -%}<script>setCurrentPath('{{ part[0] }}');</script><span class="unlinked">{{ part[1] }}</span><span class="slash">/</span>{%- else -%}<a href="/?path={{ part[0]|urlencode }}">{{ part[1] }}</a><span class="slash">/</span>{% endif %}{% endfor %}
+        <input type="button" value="select" onclick="window.open('/select', '_self')"/>
+        <input type="button" value="copy" onclick="copyPath()" />
+        <span id="msg"></span>
+    </p>
+
+    <p class="collections">
+        <ul>
+        {% for col in data.collections %}
+            <li class="collection-link"><span class="symbol">&#128193;</span><a href="/?path={{ col | urlencode }}">{{ col }}</a></li>
+        {% endfor %}
+        {% for obj in data.data_objects %}
+            <li><span class="symbol">&nbsp;</span>{{ obj }}</li>
+        {% endfor %}
+        {% if not data.collections and not data.data_objects %}
+            <li><span class="symbol">&nbsp;</span>(collection is empty)</li>
+        {% endif %}
+        </ul>
+    </p>
+
+
+    <input type="button" value="quit" onclick="window.open('/select?shutdown=1', '_self')"/>
+    
+</body>
+</html>

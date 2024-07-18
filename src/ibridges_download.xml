@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<tool id="ibridges_download" name="iBridges download from iRODS" version="0.1.0+galaxy0" python_template_version="3.5" profile="21.05">
+    <requirements>
+        <requirement type="package">ibridges</requirement>
+    </requirements>
+    <environment_variables>
+        <environment_variable name="YODA_USER">$__user__.extra_preferences.get('irods_yoda|username', '')</environment_variable>
+        <environment_variable name="YODA_PASS">$__user__.extra_preferences.get('irods_yoda|password', '')</environment_variable>
+        <environment_variable name="TOOL_DIR">$__tool_directory__</environment_variable>
+    </environment_variables>
+    <command detect_errors="exit_code"><![CDATA[
+        echo '' > data_dir;
+        python '$__tool_directory__/ibridges_download.py' --remote_path '$remote_path' --local_path '$local_path' --overwrite;
+        cat data_dir > '$data_dir'
+    ]]></command>
+    <inputs>
+        <param name="remote_path" type="text" label="iRODS path" />
+        <param name="local_path" type="text" label="Local path" />
+    </inputs>
+    <outputs>
+        <data name="data_dir" format="txt" label="Data dir"/>
+    </outputs>
+    <help>
+    </help>
+</tool>

@@ -1,0 +1,47 @@
+{% set name = "ibridges" %}
+{% set version = "1.0.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/ibridges-{{ version }}.tar.gz
+  sha256: 259d2d4ef1059d81cef6c4cb47767d15a8db8017b79adbae923165602992a34c
+
+build:
+  skip: true  # [py<38]
+  entry_points:
+    - ibridges = ibridges.__main__:main
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  number: 0
+
+requirements:
+  host:
+    - python >=3.8
+    - setuptools >=45
+    - setuptools-scm >=6.2
+    - pip
+  run:
+    - python >=3.8
+    - python-irodsclient >=2.0.0
+    - tqdm
+    - importlib-metadata  # [py<310]
+
+test:
+  imports:
+    - ibridges
+  commands:
+    - pip check
+    - ibridges --help
+  requires:
+    - pip
+
+about:
+  summary: Package for accessing data and metadata on iRods servers.
+  license: MIT
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - maartenschermer
