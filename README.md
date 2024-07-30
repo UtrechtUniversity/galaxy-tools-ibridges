@@ -14,8 +14,7 @@ The tools are named for [iBridges](https://github.com/UtrechtUniversity/iBridges
 iBridges download takes an iRODS-path to either a dataobject (file) or collection (directory) as source, and a local path to a folder to download the file or files to; iBridges upload does the reverse.
 
 #### iBridges browse
-iBridges browse launches as a Galaxy Interactive Tool.
-
+iBridges browse launches as a Galaxy Interactive Tool. [NEEDS TO BE EXPANDED]
 
 All tools rely on a valid [iRODS environment file](#irods-environment-file), and [user credentials](#irods-access) for accessing iRODS/YODA.
 
