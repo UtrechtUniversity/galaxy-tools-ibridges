@@ -2,7 +2,7 @@
 <tool tool_type="interactive" id="ibridges_browse" name="iBridges YODA browser" version="0.1.0+galaxy0" python_template_version="3.5" profile="21.05">
 
     <requirements>
-        <container type="docker">ibridges_browse:latest</container>
+        <container type="docker">ghcr.io/utrechtuniversity/ibridges_browse:0.1</container>
     </requirements>
 
     <entry_points>
