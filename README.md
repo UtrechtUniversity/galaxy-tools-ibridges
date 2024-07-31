@@ -4,20 +4,31 @@ __Galaxy iBridges download__ is a Galaxy tool that facilitates downloading of ob
 
 __Galaxy iBridges upload__ is a Galaxy tool that facilitates uploading of objects and collections to iRODS/YODA, and can be integrated in a Galaxy workflow.
 
-__Galaxy iBridges browse__ is an interactive Galaxy tool that makes it possible to browse through an iRODS/YODA instance to locate objects and collections, and select them for use in a Galaxy workflow.
+__Galaxy iBridges browser__ is an interactive Galaxy tool that makes it possible to browse through an iRODS/YODA instance to locate objects and collections, and select them for use in a Galaxy workflow.
 
 The tools are named for [iBridges](https://github.com/UtrechtUniversity/iBridges), the client used for interaction with iRODS/YODA.
 
-## How it works
-#### iBridges download and upload
+## What it does
+Please note: all three tools rely on a valid [iRODS environment file](#irods-environment-file), and valid [user credentials](#irods-access) for accessing iRODS/YODA.
 
-iBridges download takes an iRODS-path to either a dataobject (file) or collection (directory) as source, and a local path to a folder to download the file or files to; iBridges upload does the reverse.
+### iBridges download
+iBridges download takes an iRODS-path to either a dataobject (file) or collection (directory) as source, and a local path to a directory to download the file or files to as. The module has a variable 'data_dir' as output, pointing to the directory files were downloaded to.
 
-#### iBridges browse
-iBridges browse launches as a Galaxy Interactive Tool. [NEEDS TO BE EXPANDED]
+### iBridges upload
+iBridges upload takes a local path to a directory or file as source, and an iRODS-path to either a collection (directory) as target. The module requires an input called 'local_path', pointing to the path to upload.
 
-All tools rely on a valid [iRODS environment file](#irods-environment-file), and [user credentials](#irods-access) for accessing iRODS/YODA.
+### iBridges browser
+iBridges browser launches as a [Galaxy Interactive Tool](https://training.galaxyproject.org/training-material/topics/admin/tutorials/interactive-tools/tutorial.html) that allows the user to browse through iRODS via a web interface. 
 
+When running an interactive tool, the interactive tool-icon (three gears) will appear in the Galaxy main menu, to the right of _User_. Clicking the icon opens a screen listing the interactive tools that are running. This can also be reached using the option _Active Interactive Tools_ in the _User_-item of the main menu. If the icon and the option in the User-menu aren't there, it means no interactive tools are running. If they appear briefly and then disappear, launching of the tool was unsuccesful.
+
+Next, open the tool by clicking 'ibridges browser' in the Active Interactive Tools-list (if the link isn't clickable, the tool is still starting). A new tab will open with a simple web page listing the dataobjects and collections in the user's home folder for the iRODS instance. Navigate through the instance by clicking collections' names, and the links in the breadcrumb path.
+
+To select a path as output for the module, navigate to the appropriate collection and click the 'select'-button. The interactive tool will terminate, signalling to Galaxy that exectution of the workflow can continue. The selected path will be available as the module output parameter 'iRODS path' (this will take a few seconds).
+Alternatively, you can also copy the path without quitting to your computer's clipboard by clicking 'copy'.
+To quit without selecting a path, click 'quit' or close the page; the value of the 'iRODS path' parameter will be None.
+
+Please note that the tools' web page cannot close itself; close it by hand once you're done.
 
 ## Installing tools files
 Check out this repo and symlink the `src` folder to a link called `ibridges` under the `tools` folder of a Galaxy installation (or create a folder `tools/ibridges` and copy the contents of `src` into it).
@@ -108,8 +119,14 @@ execution:
       default_destination_id: local
 ```
 
-## Building local copy of the browser container
+## Multiple iRODS/YODA instances in one Galaxy project
+Currenly the tools work with one iRODS/YODA instance only. If you require accessing multiple instances within the same Galaxy project:
++ Create an extra set of tools for each instance (for instance: `tools/ibridges_geo/`, `tools/ibridges_gdk/`) and copy the contents of this repo's `src` folder into each one.
++ Give each its own `irods_environment.json` for the corresponding server.
++ Create extra sections in the `user_preferences_extra_conf.yml` for the credentials for each server (or just the passwords, if the username is the same on all instances).
++ In each of the XML-files, change the string `irods_yoda` in the lines `$__user__.extra_preferences.get('irods_yoda|username', '')` and `$__user__.extra_preferences.get('irods_yoda|password', '')` to the matching section name in the preferences file.
 
+## Building a local copy of the browser container
 Galaxy iBridges browse uses a Docker container which runs in Galaxy's own Docker-environment. It can be pulled from [Utrecht University's pakacge registry](https://github.com/UtrechtUniversity/galaxy-tools-ibridges/pkgs/container/ibridges_browse), and is pulled automatically by Galaxy, from the specification in `ibridges_browse.xml`:
 
 ```xml
@@ -121,15 +138,6 @@ Galaxy iBridges browse uses a Docker container which runs in Galaxy's own Docker
 ```
 
 If for some reason you want to build your own version of the container, the Dockerfile is available in the [docker-src](docker-src) folder of this repo. Make sure to change the value in the 'container' element in `ibridges_browse.xml` to the appropriate value.
-
-
-## Multiple iRODS/YODA instances in one Galaxy project
-
-Currenly the tools work with one iRODS/YODA instance only. If you require accessing multiple instances within the same Galaxy project:
-+ Create an extra set of tools for each instance (for instance: `tools/ibridges_geo/`, `tools/ibridges_gdk/`) and copy the contents of this repo's `src` folder into each.
-+ Give each its own `irods_environment.json` for the correct server.
-+ Create extra sections in the `user_preferences_extra_conf.yml` for the credentials for each server (or just passwords, if they the username is the same on all instances).
-+ In each of the XML-files, change the string `irods_yoda` in the lines `$__user__.extra_preferences.get('irods_yoda|username', '')` and `$__user__.extra_preferences.get('irods_yoda|password', '')` to the matching section name in the preferences file.
 
 ## License
 

@@ -13,7 +13,8 @@
     ]]></command>
     <inputs>
         <param name="irods_path" type="text" label="iRODS path" />
-        <param name="local_path" type="text" label="Local path" />
+        <!-- <param name="local_path" type="text" label="Local path" /> -->
+        <param name="local_path" type="data" format="data" label="Local path"/>
     </inputs>
     <help>
     </help>
