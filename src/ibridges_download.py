@@ -24,7 +24,7 @@ class iBridgesDownload:
         remote_path = IrodsPath(session, remote_path)
         download(
             session=session,
-            remote_path=remote_path,
+            irods_path=remote_path,
             local_path=local_path,
             overwrite=overwrite,
             copy_empty_folders=copy_empty_folders,
