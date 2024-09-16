@@ -36,6 +36,9 @@
     <outputs>
         <data name="irods_path" format="txt" label="iRODS path"/>
     </outputs>
-    <help>
-    </help>
+    <help><![CDATA[
+    Create help section here 
+    ]]></help>
+    <citations>
+     </citations>
 </tool>

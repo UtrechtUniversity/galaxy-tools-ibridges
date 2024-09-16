@@ -20,6 +20,9 @@
     <outputs>
         <data name="data_dir" format="txt" label="Data dir"/>
     </outputs>
-    <help>
-    </help>
+    <help><![CDATA[
+    Create help section here 
+    ]]></help>
+    <citations>
+     </citations>
 </tool>
