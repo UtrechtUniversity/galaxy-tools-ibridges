@@ -45,7 +45,8 @@ if __name__=="__main__":
         irods_env = json.load(f)
 
     irods_env['irods_user_name'] = os.environ['YODA_USER']
-    
+    irods_env['irods_user_name'] = irods_env['irods_user_name'].replace('__at__', '@')
+
     iBridgesDownload(
         irods_env=irods_env,
         password=os.environ['YODA_PASS'],
