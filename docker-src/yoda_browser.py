@@ -21,12 +21,14 @@ class iBridgesBrowser:
                  irods_env_path, 
                  username,
                  password,
-                 remote_path=None
+                 remote_path=None,
+                 transport_path='/app/path'
                  ):
         with open(irods_env_path, 'r') as f:
             self.irods_env = json.load(f)
         self.irods_env['irods_user_name'] = username
         self.irods_env_path = irods_env_path
+        self.transport_path = transport_path
         self.session = Session(irods_env=self.irods_env, password=password)
         self.read_path(remote_path)
 
@@ -65,7 +67,7 @@ class iBridgesBrowser:
 
     def write_selected_path(self, path=None):
         # Write selected path to a file, so it can be read as the tool's output
-        with open(f'/app/path', 'w') as f:
+        with open(self.transport_path, 'w') as f:
             f.write(path if path is not None else str(self.irods_path))
 
 @app.route('/', methods=['GET'])
@@ -103,8 +105,9 @@ if __name__ == '__main__':
     ibb = iBridgesBrowser(
         irods_env_path=os.getenv('IRODS_ENV_PATH'),
         username=os.getenv('YODA_USER'),
-        password=os.getenv('YODA_PASS')
+        password=os.getenv('YODA_PASS'),
+        transport_path=os.getenv('YODA_PASS','/app/path')
     )
     ibb.write_selected_path(path='')
 
-    app.run(host='0.0.0.0', port=5000, debug=debug)
+    app.run(host='0.0.0.0', port=int(os.getenv('FLASK_PORT',5000)), debug=debug)
