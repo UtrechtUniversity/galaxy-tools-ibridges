@@ -15,7 +15,8 @@
     <environment_variables>
         <environment_variable name="YODA_USER">$__user__.extra_preferences.get('irods_yoda|username', '')</environment_variable>
         <environment_variable name="YODA_PASS">$__user__.extra_preferences.get('irods_yoda|password', '')</environment_variable>
-        <environment_variable name="IRODS_ENV_PATH">${__tool_directory__}/irods_environment.json</environment_variable>
+        <environment_variable name="YODA_ENV">$__user__.extra_preferences.get('irods_yoda|config', '')</environment_variable>
+        <!-- <environment_variable name="IRODS_ENV_PATH">${__tool_directory__}/irods_environment.json</environment_variable> -->
     </environment_variables>
     <command><![CDATA[
         ## The command will be templated by Cheetah within Galaxy, and

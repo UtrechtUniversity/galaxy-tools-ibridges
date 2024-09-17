@@ -40,14 +40,13 @@ if __name__=="__main__":
     argparse.add_argument('--dry_run', action='store_true', default=False)
     args = argparse.parse_args()
 
-    with open(f'{os.environ["TOOL_DIR"]}/irods_environment.json', 'r') as f:
-        irods_env = json.load(f)
+    json_string = os.getenv('YODA_ENV', '{}').replace('__oc__','{').replace('__dq__','"').replace('__cc__','}').replace('__at__','@')
+    irods_env = json.loads(json_string)
+    irods_env['irods_user_name'] = os.getenv('YODA_USER', None)
 
-    irods_env['irods_user_name'] = os.environ['YODA_USER']
-    
     iBridgesUpload(
         irods_env=irods_env,
-        password=os.environ['YODA_PASS'],
+        password=os.getenv('YODA_PASS', None),
         local_path=args.local_path,
         irods_path=args.irods_path,
         overwrite=args.overwrite,

@@ -18,16 +18,12 @@ class iBridgesBrowser:
     Class for reading iRODS/YODA paths using iBridges library
     """
     def __init__(self, 
-                 irods_env_path, 
-                 username,
+                 irods_env, 
                  password,
                  remote_path=None,
                  transport_path='/app/path'
                  ):
-        with open(irods_env_path, 'r') as f:
-            self.irods_env = json.load(f)
-        self.irods_env['irods_user_name'] = username
-        self.irods_env_path = irods_env_path
+        self.irods_env = irods_env
         self.transport_path = transport_path
         self.session = Session(irods_env=self.irods_env, password=password)
         self.read_path(remote_path)
@@ -58,7 +54,6 @@ class iBridgesBrowser:
         # root_parts is for easy rendering of the breadcrumb trail
         return {
             'root': str(self.irods_path),
-            'irods_env_path': self.irods_env_path,
             'root_parts': root_parts,
             'data_objects': self.data_objects,
             'collections': self.collections,
@@ -104,10 +99,13 @@ if __name__ == '__main__':
     debug = os.getenv('DEBUG')=='1'
     if not debug:
         log.setLevel(logging.ERROR)
-    
+
+    json_string = os.getenv('YODA_ENV', '{}').replace('__oc__','{').replace('__dq__','"').replace('__cc__','}').replace('__at__','@')
+    irods_env = json.loads(json_string)
+    irods_env['irods_user_name'] = os.getenv('YODA_USER')
+
     ibb = iBridgesBrowser(
-        irods_env_path=os.getenv('IRODS_ENV_PATH'),
-        username=os.getenv('YODA_USER'),
+        irods_env=irods_env,
         password=os.getenv('YODA_PASS'),
         transport_path=os.getenv('TRANSPORT_PATH','/app/path')
     )
