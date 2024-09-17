@@ -6,6 +6,7 @@
     <environment_variables>
         <environment_variable name="YODA_USER">$__user__.extra_preferences.get('irods_yoda|username', '')</environment_variable>
         <environment_variable name="YODA_PASS">$__user__.extra_preferences.get('irods_yoda|password', '')</environment_variable>
+        <environment_variable name="YODA_ENV">$__user__.extra_preferences.get('irods_yoda|config', '')</environment_variable>
         <environment_variable name="TOOL_DIR">$__tool_directory__</environment_variable>
     </environment_variables>
     <command detect_errors="exit_code"><![CDATA[
