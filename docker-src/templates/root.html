@@ -18,37 +18,60 @@
             currentPath = path;
         }
 
-        function copyPath() {
+        function copyPath(ele) {
             var tmp = $('<input>');
             $('body').append(tmp);
-            tmp.val(currentPath).select();
+            tmp.val(ele ? ele.getAttribute('data-path') : currentPath).select();
             document.execCommand('copy');
             tmp.remove();
             message('Path copied.');
         }
+
+        function usePath(ele) {
+            if (ele) {
+                let path = ele.getAttribute('data-path');
+                window.open('/select?path='+path, '_self');
+            }
+            else {
+                window.open('/select', '_self');
+            }
+        }
+
     </script>
 
     <table>
         <tr><td>Server:</td><td>{{ data.env.irods_host }}</td></tr>
         <tr><td>User:</td><td>{{ data.env.irods_user_name }}</td></tr>
         <tr><td>Home:</td><td>{{ data.env.irods_home }}</td></tr>
-        <tr><td>.env file:</td><td>{{ data.irods_env_path }}</td></tr>    
+        <tr><td colspan="2"><span id="msg"></span></td></tr>
     </table>
 
     <p class="breadcrumbs">
         {%- for part in data.root_parts -%}{%- if part[0]==data.root -%}<script>setCurrentPath('{{ part[0] }}');</script><span class="unlinked">{{ part[1] }}</span><span class="slash">/</span>{%- else -%}<a href="/?path={{ part[0]|urlencode }}">{{ part[1] }}</a><span class="slash">/</span>{% endif %}{% endfor %}
-        <input type="button" value="select" onclick="window.open('/select', '_self')"/>
-        <input type="button" value="copy" onclick="copyPath()" />
-        <span id="msg"></span>
+        <!-- <input type="button" value="copy" onclick="copyPath()" /> -->
+        <span title="Copy path to clipboard" class="symbol copy" onclick="copyPath()">&#128203;</span>
+        <span title="Select path and quit" data-path="{{ col }}" class="symbol use" onclick="usePath()">&#11157;</span>
     </p>
 
     <p class="collections">
         <ul>
         {% for col in data.collections %}
-            <li class="collection-link"><span class="symbol">&#128193;</span><a href="/?path={{ col | urlencode }}">{{ col }}</a></li>
+            <li class="collection-link">
+                <span class="symbol">&#128193;</span>
+                <span class="collection entry">
+                    <a href="/?path={{ col | urlencode }}">{{ col }}</a>
+                </span>
+                <span title="Copy path to clipboard" data-path="{{ col }}" class="symbol copy" onclick="copyPath(this)">&#128203;</span>
+                <span title="Select path and quit" data-path="{{ col }}" class="symbol use" onclick="usePath(this)">&#11157;</span>
+            </li>
         {% endfor %}
         {% for obj in data.data_objects %}
-            <li><span class="symbol">&nbsp;</span>{{ obj }}</li>
+            <li>
+                <span class="symbol">&nbsp;</span>
+                <span class="object entry">{{ obj }}</span>
+                <span title="Copy path to clipboard" data-path="{{ obj }}" class="symbol copy" onclick="copyPath(this)">&#128203;</span>
+                <span title="Select path and quit" data-path="{{ obj }}" class="symbol use" onclick="usePath(this)">&#11157;</span>
+            </li>
         {% endfor %}
         {% if not data.collections and not data.data_objects %}
             <li><span class="symbol">&nbsp;</span>(collection is empty)</li>
@@ -58,6 +81,10 @@
 
 
     <input type="button" value="quit" onclick="window.open('/select?shutdown=1', '_self')"/>
+
+<!-- 
+    .env file: {{ data.irods_env_path }}
+-->
     
 </body>
 </html>

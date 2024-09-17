@@ -79,9 +79,12 @@ def root():
 
 @app.route('/select', methods=['GET'])
 def select():
+    path = request.args.get('path')
     shutdown = request.args.get('shutdown')=='1'
     response = app.response_class(
-            response=render_template('server_down.html', data={'shutdown': shutdown, 'irods_path': ibb.irods_path}),
+            response=render_template('server_down.html', 
+                                     data={'shutdown': shutdown,
+                                           'irods_path': path if path else ibb.irods_path}),
             status=200,
             mimetype='text/html'
         )
@@ -91,7 +94,7 @@ def select():
         if shutdown:
             ibb.write_selected_path(path='None')
         else:
-            ibb.write_selected_path()
+            ibb.write_selected_path(path=path)
         os.kill(os.getpid(), signal.SIGINT)
 
     return response
@@ -106,7 +109,7 @@ if __name__ == '__main__':
         irods_env_path=os.getenv('IRODS_ENV_PATH'),
         username=os.getenv('YODA_USER'),
         password=os.getenv('YODA_PASS'),
-        transport_path=os.getenv('YODA_PASS','/app/path')
+        transport_path=os.getenv('TRANSPORT_PATH','/app/path')
     )
     ibb.write_selected_path(path='')
 
