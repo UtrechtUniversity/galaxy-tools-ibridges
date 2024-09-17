@@ -94,21 +94,42 @@ def select():
 
     return response
 
+def desanitize(string):
+    mapped_chars = { 
+        '__gt__': '>',
+        '__lt__': '<',
+        '__sq__': "'",
+        '__dq__': '"',
+        '__ob__': '[',
+        '__cb__': ']',
+        '__oc__': '{',
+        '__cc__': '}',
+        '__at__': '@',
+        '__cn__': '\n',
+        '__cr__': '\r',
+        '__tc__': '\t',
+        '__pd__': '#'}
+
+    for key in mapped_chars.keys():
+        string = string.replace(key, mapped_chars[key])
+
+    return string
+
+
 if __name__ == '__main__':
 
     debug = os.getenv('DEBUG')=='1'
     if not debug:
         log.setLevel(logging.ERROR)
 
-    json_string = os.getenv('YODA_ENV', '{}').replace('__oc__','{').replace('__dq__','"').replace('__cc__','}').replace('__at__','@')
+    json_string = desanitize(os.getenv('YODA_ENV', '{}'))
     irods_env = json.loads(json_string)
     irods_env['irods_user_name'] = os.getenv('YODA_USER')
 
     ibb = iBridgesBrowser(
         irods_env=irods_env,
         password=os.getenv('YODA_PASS'),
-        transport_path=os.getenv('TRANSPORT_PATH','/app/path')
-    )
+        transport_path=os.getenv('TRANSPORT_PATH','/app/path'))
     ibb.write_selected_path(path='')
 
     app.run(host='0.0.0.0', port=int(os.getenv('FLASK_PORT', 5000)), debug=debug)

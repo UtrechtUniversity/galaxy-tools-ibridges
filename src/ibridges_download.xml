@@ -11,11 +11,11 @@
     </environment_variables>
     <command detect_errors="exit_code"><![CDATA[
         echo '' > data_dir;
-        python '$__tool_directory__/ibridges_download.py' --remote_path '$remote_path' --local_path '$local_path' --overwrite;
+        python '$__tool_directory__/ibridges_download.py' --irods_path '$irods_path' --local_path '$local_path' --overwrite;
         cat data_dir > '$data_dir'
     ]]></command>
     <inputs>
-        <param name="remote_path" optional="false" type="text" label="iRODS path" />
+        <param name="irods_path" optional="false" type="text" label="iRODS path" />
         <param name="local_path" optional="false" type="text" label="Local path" />
     </inputs>
     <outputs>
