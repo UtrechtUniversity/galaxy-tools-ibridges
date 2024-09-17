@@ -5,6 +5,7 @@ from ibridges.data_operations import upload
 from ibridges.path import IrodsPath
 from ibridges.session import Session
 from pathlib import Path
+from shared import desanitize
 
 class iBridgesUpload:
 
@@ -40,7 +41,7 @@ if __name__=="__main__":
     argparse.add_argument('--dry_run', action='store_true', default=False)
     args = argparse.parse_args()
 
-    json_string = os.getenv('YODA_ENV', '{}').replace('__oc__','{').replace('__dq__','"').replace('__cc__','}').replace('__at__','@')
+    json_string = desanitize(os.getenv('YODA_ENV', '{}'))
     irods_env = json.loads(json_string)
     irods_env['irods_user_name'] = os.getenv('YODA_USER', None)
 
