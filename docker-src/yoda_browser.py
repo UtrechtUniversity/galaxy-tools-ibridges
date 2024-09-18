@@ -15,7 +15,7 @@ ibb = None
 
 class iBridgesBrowser:
     """
-    Class for reading iRODS/YODA paths using iBridges library
+    Class for reading iRODS paths using iBridges library
     """
     def __init__(self, 
                  irods_env, 
@@ -25,43 +25,70 @@ class iBridgesBrowser:
                  ):
         self.irods_env = irods_env
         self.transport_path = transport_path
-        self.session = Session(irods_env=self.irods_env, password=password)
-        self.read_path(remote_path)
+        self.last_error = None
+        self.session = None
+        try:
+            # Start iRODS session
+            self.session = Session(irods_env=self.irods_env, password=password)
+            # Read remote root
+            self.read_path(remote_path)
+            # Reset Galaxy output file
+            self.write_selected_path(path='')
+        except Exception as e:
+            log.error(str(e))
+            self.last_error = str(e)
 
     def read_path(self, remote_path):
-        # Set iRODS path to read
-        self.irods_path = IrodsPath(self.session, remote_path if remote_path else '~')
-        
-        if not (self.irods_path.collection_exists() or self.irods_path.dataobject_exists()):
-            # If the path doesn't exist, subtitute by user's root
-            self.irods_path = IrodsPath(self.session, '~')
-        elif self.irods_path.dataobject_exists():
-            # If a object (file) rather than a collection (folder) was provided, subtitute by its folder
-            self.irods_path = self.irods_path.parent
+        """
+        Read all objects and collections in an iRODS path.
+        """
+        try:
+            self.last_error = None
 
-        coll = get_collection(self.session, self.irods_path)
-        self.data_objects = [x.path for x in coll.data_objects]
-        self.collections = [x.path for x in coll.subcollections if not x.path==str(self.irods_path)]
+            # Set iRODS path to read
+            self.irods_path = IrodsPath(self.session, remote_path if remote_path else '~')
+            
+            if not (self.irods_path.collection_exists() or self.irods_path.dataobject_exists()):
+                # If the path doesn't exist, subtitute by user's root
+                self.irods_path = IrodsPath(self.session, '~')
+            elif self.irods_path.dataobject_exists():
+                # If a object (file) rather than a collection (folder) was provided, subtitute by its folder
+                self.irods_path = self.irods_path.parent
+
+            coll = get_collection(self.session, self.irods_path)
+            self.data_objects = [x.path for x in coll.data_objects]
+            self.collections = [x.path for x in coll.subcollections if not x.path==str(self.irods_path)]
+        except Exception as e:
+            log.error(str(e))
+            self.last_error = str(e)
     
     def get_output(self):
-        root = str(IrodsPath(self.session, '~'))
-        path = root
-        root_parts = [(path, root)]
-        for part in  str(self.irods_path).split("/")[3:]:
-            path = f"{path}/{part}"
-            root_parts.append((path, part))
 
-        # root_parts is for easy rendering of the breadcrumb trail
-        return {
-            'root': str(self.irods_path),
-            'root_parts': root_parts,
-            'data_objects': self.data_objects,
-            'collections': self.collections,
-            'env': self.irods_env
-            }
+        out = { 'root': '',
+                'root_parts': [],
+                'data_objects': [],
+                'collections': [],
+                'env': self.irods_env,
+                'last_error': self.last_error }
+
+        if self.session:
+            root = str(IrodsPath(self.session, '~'))
+            path = root
+            # root_parts allows for easy rendering of the breadcrumb trail
+            root_parts = [(path, root)]
+            for part in  str(self.irods_path).split("/")[3:]:
+                path = f"{path}/{part}"
+                root_parts.append((path, part))
+            
+            out['root'] = str(self.irods_path)
+            out['root_parts'] = root_parts
+            out['data_objects'] = self.data_objects
+            out['collections'] = self.collections
+
+        return out
 
     def write_selected_path(self, path=None):
-        # Write selected path to a file, so it can be read as the tool's output
+        # Write selected path to file that is read as the tool's output
         with open(self.transport_path, 'w') as f:
             f.write(path if path is not None else str(self.irods_path))
 
@@ -74,6 +101,10 @@ def root():
 
 @app.route('/select', methods=['GET'])
 def select():
+    """
+    Function writes the select path (if selected) to the transport file
+    and shuts down the app.
+    """
     path = request.args.get('path')
     shutdown = request.args.get('shutdown')=='1'
     response = app.response_class(
@@ -95,6 +126,10 @@ def select():
     return response
 
 def desanitize(string):
+    """
+    Galaxy 'sanitizes' variable when exporting them to the
+    environment, this function restores the original characters.
+    """
     mapped_chars = { 
         '__gt__': '>',
         '__lt__': '<',
@@ -126,10 +161,11 @@ if __name__ == '__main__':
     irods_env = json.loads(json_string)
     irods_env['irods_user_name'] = os.getenv('YODA_USER')
 
+    # When changing value of TRANSPORT_PATH make sure to change to the same 
+    # value in the Galaxy tool's XML file
     ibb = iBridgesBrowser(
         irods_env=irods_env,
         password=os.getenv('YODA_PASS'),
         transport_path=os.getenv('TRANSPORT_PATH','/app/path'))
-    ibb.write_selected_path(path='')
 
     app.run(host='0.0.0.0', port=int(os.getenv('FLASK_PORT', 5000)), debug=debug)
