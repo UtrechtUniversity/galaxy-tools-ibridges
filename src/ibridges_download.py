@@ -18,6 +18,7 @@ class iBridgesDownload:
                  copy_empty_folders,
                  dry_run
                  ):
+
         if not Path(local_path).exists():
             raise FileNotFoundError("%s does not exist" % local_path)
 
@@ -42,19 +43,31 @@ if __name__=="__main__":
     argparse.add_argument('--dry_run', action='store_true', default=False)
     args = argparse.parse_args()
 
-    json_string = desanitize(os.getenv('YODA_ENV', '{}'))
-    irods_env = json.loads(json_string)
-    irods_env['irods_user_name'] = os.getenv('YODA_USER', None)
+    exit_code = 0
 
-    iBridgesDownload(
-        irods_env=irods_env,
-        password=os.getenv('YODA_PASS', None),
-        irods_path=args.irods_path,
-        local_path=args.local_path,
-        overwrite=args.overwrite,
-        copy_empty_folders=args.copy_empty_folders,
-        dry_run=args.dry_run,
-    )
+    try:
 
-    with open(f'{os.environ["TOOL_DIR"]}/data_dir', 'w') as f:
-        f.write(args.local_path)
+        json_string = desanitize(os.getenv('YODA_ENV', '{}'))
+        irods_env = json.loads(json_string)
+        irods_env['irods_user_name'] = os.getenv('YODA_USER', None)
+
+        ibd = iBridgesDownload(
+            irods_env=irods_env,
+            password=os.getenv('YODA_PASS', None),
+            irods_path=args.irods_path,
+            local_path=args.local_path,
+            overwrite=args.overwrite,
+            copy_empty_folders=args.copy_empty_folders,
+            dry_run=args.dry_run,
+        )
+
+        with open(f'{os.environ["TOOL_DIR"]}/data_dir', 'w') as f:
+            f.write(args.local_path)
+
+    except Exception as e:
+        print(str(e))
+        exit_code = 1
+
+    with open(f'{os.environ["TOOL_DIR"]}/exit_code', 'w') as f:
+        f.write(str(exit_code))
+            
