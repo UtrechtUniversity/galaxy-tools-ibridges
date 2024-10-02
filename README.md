@@ -121,7 +121,7 @@ Copy the appropriate server configuration from the section [Step 2. Configuring 
 Make sure users using the tools have access to the iRODS instance specified in the iRODS environment Users must save their username (e-mail address) and Data Access Password in the appropriate inputs for `Your iRODS account`. Every time one of the tools needs to access iRODS, it automatically reads the credentials from the user's personal profile, and uses them to log in. Be aware that Data Access Passwords usually have a limited lifespan.
 
 ## Building a local copy of the browser container
-Galaxy iBridges browse uses a Docker container which runs in Galaxy's own Docker-environment. It can be pulled from [Utrecht University's pakacge registry](https://github.com/UtrechtUniversity/galaxy-tools-ibridges/pkgs/container/ibridges_browse), and is pulled automatically by Galaxy, from the specification in `ibridges_browse.xml`:
+Galaxy iBridges browse uses a Docker container which runs in Galaxy's own Docker-environment. It can be pulled from [Utrecht University's package registry](https://github.com/UtrechtUniversity/galaxy-tools-ibridges/pkgs/container/ibridges_browse), and is pulled automatically by Galaxy, from the specification in `ibridges_browse.xml`:
 
 ```xml
     [...]
