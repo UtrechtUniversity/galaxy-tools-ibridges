@@ -69,7 +69,8 @@ class iBridgesBrowser:
                 'data_objects': [],
                 'collections': [],
                 'env': self.irods_env,
-                'last_error': self.last_error }
+                'last_error': self.last_error,
+                'transport_path': self.transport_path }
 
         if self.session:
             root = str(IrodsPath(self.session, '~'))
@@ -150,22 +151,20 @@ def desanitize(string):
 
     return string
 
-
 if __name__ == '__main__':
 
     debug = os.getenv('DEBUG')=='1'
     if not debug:
         log.setLevel(logging.ERROR)
 
-    json_string = desanitize(os.getenv('YODA_ENV', '{}'))
-    irods_env = json.loads(json_string)
+    irods_env = json.loads(desanitize(os.getenv('YODA_ENV', '{}')))
     irods_env['irods_user_name'] = os.getenv('YODA_USER')
 
     # When changing value of TRANSPORT_PATH make sure to change to the same 
     # value in the Galaxy tool's XML file
     ibb = iBridgesBrowser(
         irods_env=irods_env,
-        password=os.getenv('YODA_PASS'),
+        password='JYY9O6YEglBKeFFZl_VqSuRRWEu0veiT',
         transport_path=os.getenv('TRANSPORT_PATH','/app/path'))
 
     app.run(host='0.0.0.0', port=int(os.getenv('FLASK_PORT', 5000)), debug=debug)

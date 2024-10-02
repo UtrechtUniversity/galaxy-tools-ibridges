@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>iRODS browser</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
-    <script src="{{ url_for('static', filename='js/jquery-3.7.1.min.js') }}" charset="utf-8"></script> 
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css', _external=True) }}">
+    <script src="{{ url_for('static', filename='js/jquery-3.7.1.min.js', _external=True) }}" charset="utf-8"></script> 
 </head>
 <body>
     <script>
@@ -30,11 +30,15 @@
         function usePath(ele) {
             if (ele) {
                 let path = ele.getAttribute('data-path');
-                window.open('/select?path='+path, '_self');
+                window.open("{{ url_for('select', _external=True) }}?path="+path, "_self");
             }
             else {
-                window.open('/select', '_self');
+                window.open("{{ url_for('select', _external=True) }}", "_self");
             }
+        }
+
+        function quit() {
+            window.open("{{ url_for('select', _external=True, shutdown=1) }}", "_self");
         }
 
     </script>
@@ -47,13 +51,11 @@
         {% else %}
         <tr><td>Home:</td><td>{{ data.env.irods_home }}</td></tr>
         {% endif %}
-        <tr><td colspan="2"><span id="msg"></span></td></tr>
     </table>
 
     {% if data.root_parts|length > 0 %}
     <p class="breadcrumbs">
-        {%- for part in data.root_parts -%}{%- if part[0]==data.root -%}<script>setCurrentPath('{{ part[0] }}');</script><span class="unlinked">{{ part[1] }}</span><span class="slash">/</span>{%- else -%}<a href="/?path={{ part[0]|urlencode }}">{{ part[1] }}</a><span class="slash">/</span>{% endif %}{% endfor %}
-        <!-- <input type="button" value="copy" onclick="copyPath()" /> -->
+        {%- for part in data.root_parts -%}{%- if part[0]==data.root -%}<script>setCurrentPath('{{ part[0] }}');</script><span class="unlinked">{{ part[1] }}</span><span class="slash">/</span>{%- else -%}<a href="{{ url_for('root', _external=True, path=part[0]|urlencode) }}">{{ part[1] }}</a><span class="slash">/</span>{% endif %}{% endfor %}
         <span title="Copy path to clipboard" class="symbol copy" onclick="copyPath()">&#128203;</span>
         <span title="Select path and quit" data-path="{{ col }}" class="symbol use" onclick="usePath()">&#11157;</span>
     </p>
@@ -65,7 +67,7 @@
             <li class="collection-link">
                 <span class="symbol">&#128193;</span>
                 <span class="collection entry">
-                    <a href="/?path={{ col | urlencode }}">{{ col }}</a>
+                    <a href="{{ url_for('root', _external=True, path=col|urlencode) }}">{{ col }}</a>
                 </span>
                 <span title="Copy path to clipboard" data-path="{{ col }}" class="symbol copy" onclick="copyPath(this)">&#128203;</span>
                 <span title="Select path and quit" data-path="{{ col }}" class="symbol use" onclick="usePath(this)">&#11157;</span>
@@ -85,7 +87,7 @@
         </ul>
     </p>
 
-    <input type="button" value="quit" onclick="window.open('/select?shutdown=1', '_self')"/>
+    <input type="button" value="quit" onclick="quit()"/> <span id="msg"></span>
 
     <hr />
 
@@ -96,13 +98,18 @@
         </tr>
         <tr>
             <td><span class="symbol">&#11157;</span></td>
-            <td>Write path to Galaxy and quit iRODS browser.</td>
+            <td>Export path to Galaxy and quit iRODS browser.</td>
         </tr>
         <tr>
             <td><span class="symbol">quit</span></td>
-            <td>Quit iRODS browser without selecting a path.</td>
+            <td>Quit iRODS browser without exporting a path.</td>
         </tr>
     </table>
+
+<!-- 
+last error: {{data.last_error}}
+transport path: {{data.transport_path}}
+-->
 
 </body>
 </html>
