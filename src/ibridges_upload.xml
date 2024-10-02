@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
-<tool id="ibridges_upload" name="iBridges upload to iRDOS" version="0.2.0" python_template_version="3.5" profile="21.05">
+<tool id="ibridges_upload" name="iBridges upload to iRDOS" version="0.3.0" python_template_version="3.5" profile="21.05">
     <requirements>
         <requirement type="package">ibridges</requirement>
     </requirements>
     <environment_variables>
-        <environment_variable name="YODA_USER">$__user__.extra_preferences.get('irods_yoda|username', '')</environment_variable>
-        <environment_variable name="YODA_PASS">$__user__.extra_preferences.get('irods_yoda|password', '')</environment_variable>
-        <environment_variable name="YODA_ENV">$__user__.extra_preferences.get('irods_yoda|config', '')</environment_variable>
+        <environment_variable name="IRODS_USER">$__user__.extra_preferences.get('irods_config|username', '')</environment_variable>
+        <environment_variable name="IRODS_PASS">$__user__.extra_preferences.get('irods_config|password', '')</environment_variable>
+        <environment_variable name="IRODS_ENV">$__user__.extra_preferences.get('irods_config|env', '')</environment_variable>
         <environment_variable name="TOOL_DIR">$__tool_directory__</environment_variable>
     </environment_variables>
     <command detect_errors="exit_code"><![CDATA[

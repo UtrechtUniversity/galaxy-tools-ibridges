@@ -54,6 +54,8 @@
         {% endif %}
     </table>
 
+    <!--  transport path: {{data.transport_path}} -->
+
     {% if data.root_parts|length > 0 %}
     <p class="breadcrumbs">
         {%- for part in data.root_parts -%}{%- if part[0]==data.root -%}<script>setCurrentPath('{{ part[0] }}');</script><span class="unlinked">{{ part[1] }}</span><span class="slash">/</span>{%- else -%}<a href="?path={{ part[0]|urlencode }}">{{ part[1] }}</a><span class="slash">/</span>{% endif %}{% endfor %}
@@ -106,11 +108,6 @@
             <td>Quit iRODS browser without exporting a path.</td>
         </tr>
     </table>
-
-<!-- 
-last error: {{data.last_error}}
-transport path: {{data.transport_path}}
--->
 
 </body>
 </html>

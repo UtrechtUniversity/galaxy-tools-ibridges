@@ -5,4 +5,4 @@ COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 EXPOSE 5000
-CMD ["python3", "yoda_browser.py"]
+CMD ["python3", "irods_browser.py"]

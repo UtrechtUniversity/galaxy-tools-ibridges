@@ -157,14 +157,14 @@ if __name__ == '__main__':
     if not debug:
         log.setLevel(logging.ERROR)
 
-    irods_env = json.loads(desanitize(os.getenv('YODA_ENV', '{}')))
-    irods_env['irods_user_name'] = os.getenv('YODA_USER')
+    irods_env = json.loads(desanitize(os.getenv('IRODS_ENV', '{}')))
+    irods_env['irods_user_name'] = os.getenv('IRODS_USER', None)
 
     # When changing value of TRANSPORT_PATH make sure to change to the same 
-    # value in the Galaxy tool's XML file
+    # value in the Galaxy tool's XML file (default: /app/path)
     ibb = iBridgesBrowser(
         irods_env=irods_env,
-        password='JYY9O6YEglBKeFFZl_VqSuRRWEu0veiT',
+        password=os.getenv('IRODS_PASS', None),
         transport_path=os.getenv('TRANSPORT_PATH','/app/path'))
 
     app.run(host='0.0.0.0', port=int(os.getenv('FLASK_PORT', 5000)), debug=debug)

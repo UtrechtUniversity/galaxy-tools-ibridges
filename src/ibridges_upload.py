@@ -47,13 +47,13 @@ if __name__=="__main__":
 
     try:
 
-        json_string = desanitize(os.getenv('YODA_ENV', '{}'))
+        json_string = desanitize(os.getenv('IRODS_ENV', '{}'))
         irods_env = json.loads(json_string)
-        irods_env['irods_user_name'] = os.getenv('YODA_USER', None)
+        irods_env['irods_user_name'] = os.getenv('IRODS_USER', None)
 
         iBridgesUpload(
             irods_env=irods_env,
-            password=os.getenv('YODA_PASS', None),
+            password=os.getenv('IRODS_PASS', None),
             local_path=args.local_path,
             irods_path=args.irods_path,
             overwrite=args.overwrite,
