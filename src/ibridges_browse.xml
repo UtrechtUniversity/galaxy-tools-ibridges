@@ -27,7 +27,7 @@
 
         ## The command below will override the CMD specified in the container's Dockerfile
 
-        python3 /app/yoda_browser.py;
+        python3 /app/irods_browser.py;
         cat /app/path > '$irods_path'
     ]]>
     </command>
