@@ -4,7 +4,7 @@ import os
 from ibridges.data_operations import download
 from ibridges.path import IrodsPath
 from ibridges.session import Session
-from shared import desanitize
+from shared import desanitize, get_irods_env, fix_irods_path
 
 class iBridgesDownload:
 
@@ -20,11 +20,7 @@ class iBridgesDownload:
         session = Session(irods_env=irods_env, password=password)
 
         for item in irods_path.split(separator):
-
-            # removing root slash if paths appear to be relative
-            if item[:len(irods_env['irods_home'])] != irods_env['irods_home']:
-                item = item.lstrip('/')
-
+            irods_path = fix_irods_path(item, irods_env['irods_home'])
             irods_path = IrodsPath(session, item)
             download(
                 session=session,
@@ -47,14 +43,12 @@ if __name__=="__main__":
         if not os.path.exists(args.local_path):
             os.makedirs(args.local_path)
 
-        json_string = desanitize(os.getenv('IRODS_ENV', '{}')).strip()
-        irods_env = json.loads(json_string)
-        irods_env['irods_user_name'] = os.getenv('IRODS_USER', None).strip()
+        irods_env = get_irods_env()
         separator = os.getenv('SEPARATOR', '|').strip()
 
         iBridgesDownload(
             irods_env=irods_env,
-            password=os.getenv('IRODS_PASS', None).strip(),
+            password=os.getenv('IRODS_PASS', None),
             irods_path=args.irods_path,
             separator=separator,
             local_path=args.local_path,

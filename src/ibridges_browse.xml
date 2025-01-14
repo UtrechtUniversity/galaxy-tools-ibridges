@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
-<tool tool_type="interactive" id="ibridges_browse" name="iBridges browser for iRODS" version="0.3.0" python_template_version="3.5" profile="21.05">
+<tool tool_type="interactive" id="ibridges_browse" name="iBridges browser for iRODS" version="0.5.0" python_template_version="3.5" profile="21.05">
 
     <requirements>
-        <container type="docker">ghcr.io/utrechtuniversity/ibridges_browse:0.4</container>
+        <container type="docker">ghcr.io/utrechtuniversity/ibridges_browse:0.5</container>
     </requirements>
 
     <entry_points>
