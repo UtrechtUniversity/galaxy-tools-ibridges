@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
-<tool id="ibridges_upload" name="iBridges upload to iRDOS" version="0.3.0" python_template_version="3.5" profile="21.05">
+<tool id="ibridges_upload" name="iBridges upload to iRDOS" version="0.4.0" python_template_version="3.5" profile="21.05">
     <requirements>
         <requirement type="package">ibridges</requirement>
+        <requirement type="package">json</requirement>
     </requirements>
     <environment_variables>
         <environment_variable name="IRODS_USER">$__user__.extra_preferences.get('irods_config|username', '')</environment_variable>
@@ -10,18 +11,29 @@
         <environment_variable name="TOOL_DIR">$__tool_directory__</environment_variable>
     </environment_variables>
     <command detect_errors="exit_code"><![CDATA[
-        echo 0 > exit_code;
-        python '$__tool_directory__/ibridges_upload.py' --local_path '$local_path' --irods_path '$irods_path' --overwrite;
-        e_code=$(cat exit_code);
-        exit $(($e_code));
+        #import json
+        #set $files = []
+        #for $i in $range(len($local_collection.keys()))
+        #silent $files.append(($local_collection[$i].false_path, $local_collection[$i].name)) 
+        #end for
+        #silent f=open($__tool_directory__+"/files_to_upload.json", 'w')
+        #silent json.dump($files, f)
+        python '$__tool_directory__/ibridges_upload.py' --irods_path '$irods_path' --overwrite
     ]]></command>
     <inputs>
-        <param name="irods_path" type="text" optional="false" label="iRODS path" />
-        <param name="local_path" type="data" optional="false" format="data" label="Local path"/>
+        <param name="local_collection" type="data_collection" optional="false" label="Data collection (source)" />
+        <param name="irods_path" type="text" optional="false" label="iRODS path (target)" value="" />
     </inputs>
+    <outputs>
+	    <data type="data" name="placeholder" label="iRODS upload" />
+    </outputs>
     <help><![CDATA[
-    Create help section here 
+        Tool upload files from a Galaxy collection into an iRODS folder.
+
+        Choose the Galaxy collection to upload, and specify the iRODS path (needs to be a folder / iRODS collection) to upload to. If your files are not in a collection yet, manually create a collection first.
+        If you do not know the exact iRODS path, you can use the 'iBridges browser for iRODS' interactive tool to obtain the correct path.
     ]]></help>
     <citations>
      </citations>
 </tool>
+

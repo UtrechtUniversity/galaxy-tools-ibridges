@@ -4,66 +4,64 @@ import os
 from ibridges.data_operations import upload
 from ibridges.path import IrodsPath
 from ibridges.session import Session
-from pathlib import Path
-from shared import desanitize
+from shared import desanitize, get_irods_env, fix_irods_path
 
 class iBridgesUpload:
 
     def __init__(self, 
-                 irods_env, 
-                 password,
-                 local_path,
-                 irods_path,
-                 overwrite,
-                 copy_empty_folders,
-                 dry_run
-                 ):
+                 irods_env,
+                 password):
+        self.irods_env = irods_env
+        self.session = Session(irods_env=irods_env, password=password)
 
-        if not Path(local_path).exists():
-            raise FileNotFoundError("%s does not exist" % local_path)
+    def upload_file(self,
+                    irods_path,
+                    local_path,
+                    overwrite):
 
-        session = Session(irods_env=irods_env, password=password)
-        irods_path = IrodsPath(session, irods_path)
+        irods_path = fix_irods_path(irods_path, self.irods_env['irods_home'])
+        irods_path = IrodsPath(self.session, irods_path)
+
         upload(
-            session=session,
+            session=self.session,
             local_path=local_path,
             irods_path=irods_path,
             overwrite=overwrite,
-            copy_empty_folders=copy_empty_folders,
-            dry_run=dry_run,
+            copy_empty_folders=True,
+            dry_run=False
         )
 
 if __name__=="__main__":
 
     argparse = argparse.ArgumentParser()
-    argparse.add_argument('--local_path', type=str, required=True)
     argparse.add_argument('--irods_path', type=str, required=True)
     argparse.add_argument('--overwrite', action='store_true')
-    argparse.add_argument('--copy_empty_folders', action='store_true')
-    argparse.add_argument('--dry_run', action='store_true', default=False)
     args = argparse.parse_args()
-
-    exit_code = 0
 
     try:
 
-        json_string = desanitize(os.getenv('IRODS_ENV', '{}'))
-        irods_env = json.loads(json_string)
-        irods_env['irods_user_name'] = os.getenv('IRODS_USER', None)
+        irods_env = get_irods_env()
+        tool_dir = os.getenv('TOOL_DIR', './')
 
-        iBridgesUpload(
-            irods_env=irods_env,
-            password=os.getenv('IRODS_PASS', None),
-            local_path=args.local_path,
-            irods_path=args.irods_path,
-            overwrite=args.overwrite,
-            copy_empty_folders=args.copy_empty_folders,
-            dry_run=args.dry_run,
-        )
-    
+        ibu = iBridgesUpload(irods_env=irods_env,
+                             password=os.getenv('IRODS_PASS', None).strip())
+
+        with open(f'{tool_dir}/files_to_upload.json') as f:
+            files = json.load(f)
+
+        for path, name in files:
+            local_path = path
+            irods_path = f"{args.irods_path.rstrip("/")}/{name.lstrip("/")}"
+
+            ibu.upload_file(
+                irods_path=irods_path,
+                local_path=local_path,
+                overwrite=args.overwrite
+            )
+
+        exit(0)
+
     except Exception as e:
         print(str(e))
-        exit_code = 1
+        exit(1)
 
-    with open(f'{os.environ["TOOL_DIR"]}/exit_code', 'w') as f:
-        f.write(str(exit_code))

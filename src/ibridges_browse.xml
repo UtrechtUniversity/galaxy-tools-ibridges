@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
-<tool tool_type="interactive" id="ibridges_browse" name="iBridges browser for iRODS" version="0.3.0" python_template_version="3.5" profile="21.05">
+<tool tool_type="interactive" id="ibridges_browse" name="iBridges browser for iRODS" version="0.5.0" python_template_version="3.5" profile="21.05">
 
     <requirements>
-        <container type="docker">ghcr.io/utrechtuniversity/ibridges_browse:0.4</container>
+        <container type="docker">ghcr.io/utrechtuniversity/ibridges_browse:0.5</container>
     </requirements>
 
     <entry_points>
@@ -18,15 +18,7 @@
         <environment_variable name="IRODS_ENV">$__user__.extra_preferences.get('irods_config|env', '')</environment_variable>
     </environment_variables>
     <command><![CDATA[
-        ## The command will be templated by Cheetah within Galaxy, and
-        ## then run inside the Docker container!
-
-        ## This only works because Galaxy's user data directory is mapped
-        ## onto the Docker container at runtime - enabling access to
-        ## '$irods_path' from inside the container.
-
-        ## The command below will override the CMD specified in the container's Dockerfile
-
+        ## Command below will override the CMD specified in the container's Dockerfile
         python3 /app/irods_browser.py;
         cat /app/path > '$irods_path'
     ]]>
@@ -37,7 +29,9 @@
         <data name="irods_path" format="txt" label="iRODS path"/>
     </outputs>
     <help><![CDATA[
-    Create help section here 
+        Interactive tool for browsing through an iRODS instance.
+        
+        When you run this tool, it becomes available as an interactive tool (tunning interactive tools can be accessed through Galaxy's User-,menu > Active Interactive Tools). It allows browsing through the iRODS instance specified in the settings, and either copy a path to the clipboard (by clicking a copy-icon) or copy it into the Galaxy-history (by clicking an arrow-icon). The tool automatically stops running when you close the browser-tab in which it is running.
     ]]></help>
     <citations>
      </citations>

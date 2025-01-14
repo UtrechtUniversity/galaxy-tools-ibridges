@@ -1,32 +1,43 @@
 <?xml version="1.0"?>
-<tool id="ibridges_download" name="iBridges download from iRODS" version="0.3.0" python_template_version="3.5" profile="21.05">
+<tool id="ibridges_download" name="iBridges download from iRODS" version="0.4.0" python_template_version="3.5" profile="21.05">
+
     <requirements>
         <requirement type="package">ibridges</requirement>
     </requirements>
+
     <environment_variables>
         <environment_variable name="IRODS_USER">$__user__.extra_preferences.get('irods_config|username', '')</environment_variable>
         <environment_variable name="IRODS_PASS">$__user__.extra_preferences.get('irods_config|password', '')</environment_variable>
         <environment_variable name="IRODS_ENV">$__user__.extra_preferences.get('irods_config|env', '')</environment_variable>
         <environment_variable name="TOOL_DIR">$__tool_directory__</environment_variable>
+        <environment_variable name="SEPARATOR">|</environment_variable>
     </environment_variables>
+
     <command detect_errors="exit_code"><![CDATA[
-        echo 0 > exit_code;
-        echo '' > data_dir;
-        python '$__tool_directory__/ibridges_download.py' --irods_path '$irods_path' --local_path '$local_path' --overwrite;
-        cat data_dir > '$data_dir';
-        e_code=$(cat exit_code);
-        exit $(($e_code));
+	    python '$__tool_directory__/ibridges_download.py' --irods_path '$irods_path' --local_path 'irods_downloads' --overwrite;
     ]]></command>
+
     <inputs>
-        <param name="irods_path" optional="false" type="text" label="iRODS path" />
-        <param name="local_path" optional="false" type="text" label="Local path" />
+        <param name="irods_path" optional="false" type="text" label="iRODS path (source)" value="">
+            <sanitizer sanitize="false" />
+        </param>
     </inputs>
+
     <outputs>
-        <data name="data_dir" format="txt" label="Data dir"/>
+        <collection type="list" name="irods_downloads" label="iRODS download">
+            <discover_datasets pattern="(?P&lt;name&gt;.*)" directory="irods_downloads" />
+        </collection>
     </outputs>
+
     <help><![CDATA[
-    Create help section here 
+        Tool downloads files from iRODS into a Galaxy collection.
+
+        Specify the iRODS path of the file to download in 'iRODS path (source)'. This can be either an absolute iRODS path (including iRODS-home and -zone), or a relative path, omitting home and zone.
+        Currently, this tool only downloads files (data objects), not folders (collections). To download mutiple files ar once, enter all paths, concatenated with a pipeline (|).
+        If you do not know the exact iRODS path, you can use the 'iBridges browser for iRODS' interactive tool to obtain the correct path.
     ]]></help>
+
     <citations>
      </citations>
+
 </tool>
