@@ -1,19 +1,19 @@
 # Galaxy Project tools module for downloading, uploading & browsing iRODS
 
-__Galaxy iBridges download__ is a Galaxy tool that facilitates downloading of objects (files) and collections (folders) from iRODS, and can be integrated in a Galaxy workflow.
+__Galaxy iBridges download__ is a Galaxy tool that facilitates downloading of objects (files) from iRODS.
 
-__Galaxy iBridges upload__ is a Galaxy tool that facilitates uploading of objects and collections to iRODS, and can be integrated in a Galaxy workflow.
+__Galaxy iBridges upload__ is a Galaxy tool that facilitates uploading Galaxy collections to iRODS.
 
-__Galaxy iBridges browser__ is an interactive Galaxy tool that makes it possible to browse through an iRODS instance to locate objects and collections, and select them for use in a Galaxy workflow.
+__Galaxy iBridges browser__ is an interactive Galaxy tool that allows users to browse through an iRODS instance to locate objects and collections, and select them for use in a Galaxy workflow.
 
 The tools are named for [iBridges](https://github.com/UtrechtUniversity/iBridges), the client used for interaction with iRODS.
 
 ## What it does
 ### iBridges download
-iBridges download takes an iRODS-path to either a dataobject (file) or collection (directory) as source, and a local path to a directory to download the file or files to as. The module has a variable 'data_dir' as output, pointing to the directory files were downloaded to.
+iBridges download takes an iRODS-path to (a) dataobject(s) as source, downloads the file(s), and creates a Galaxy dataset collection containing all downloaded files.
 
 ### iBridges upload
-iBridges upload takes a local path to a directory or file as source, and an iRODS-path to either a collection (directory) as target. The module requires an input called 'local_path', pointing to the path to upload.
+iBridges upload a Galaxy collection to an iRODS-path a collection (directory).
 
 ### iBridges browser
 iBridges browser launches as a [Galaxy Interactive Tool](https://training.galaxyproject.org/training-material/topics/admin/tutorials/interactive-tools/tutorial.html) that allows the user to browse the objects and collections in the iRODS instance through a web interface.
@@ -59,15 +59,7 @@ preferences:
 
 This will create a section `Your iRODS account` with inputs for _Username_, _Data Access Password_, and _Config_ in the Galaxy user profile, in which users can store their credentials for accessing the appropriate iRODS instance. 
 
-### Changes to `tool_conf.xml`
-Add the tools to an appropriate section in the `config/tool_conf.xml`:
-```xml
-    <tool file="ibridges/ibridges_download.xml" />
-    <tool file="ibridges/ibridges_upload.xml" />
-    <tool file="ibridges/ibridges_browse.xml" />
-```
-
-<span style="color:red">**Please note: if you don't need the browse function, omit the third line shown above, and skip the changes to `config/galaxy.yml` and `config/job.yml` detailed below.**</span>
+<span style="color:red">**Please note: if you don't need the browse function, skip the changes to `config/galaxy.yml` and `config/job.yml` detailed below.**</span>
 
 ### Changes to `galaxy.yml`
 The browse tool is an interactive tool (essentially a webserver communicating with the iRODS server, running in a Docker container). To enable the running of interactive tools, make sure the following settings are present in the  `galaxy` and `gravity` sections of `config/galaxy.yml` (change `my_galaxy_domain.com` to the domain of the actual Galaxy server):
@@ -118,7 +110,7 @@ execution:
 Copy the appropriate server configuration from the section [Step 2. Configuring iCommands](https://www.uu.nl/en/research/yoda/guide-to-yoda/i-am-using-yoda/using-icommands-for-large-datasets#paragraph-152527) of the page 'Using iCommands for large datasets', and paste it as a string into the _Config_ input for `Your iRODS account` (via main Galaxy menu: _User_ > _Preferences_; link _Manage Information_). You can leave the iRODS username `exampleuser@uu.nl` as it is.
 
 ## iRODS access 
-Make sure users using the tools have access to the iRODS instance specified in the iRODS environment Users must save their username (e-mail address) and Data Access Password in the appropriate inputs for `Your iRODS account`. Every time one of the tools needs to access iRODS, it automatically reads the credentials from the user's personal profile, and uses them to log in. Be aware that Data Access Passwords usually have a limited lifespan.
+Make sure users using the tools have access to the iRODS instance specified in the iRODS environment Users must save their username (e-mail address) and Data Access Password in the appropriate inputs for `Your iRODS account`. Every time one of the tools needs to access iRODS, it automatically reads the credentials from the user's personal profile, and uses them to log in. Be aware that Data Access Passwords have a limited lifespan; if a DAP has expired, the tools will fail, and you will see an error message in the error output.
 
 ## Building a local copy of the browser container
 Galaxy iBridges browse uses a Docker container which runs in Galaxy's own Docker-environment. It can be pulled from [Utrecht University's package registry](https://github.com/UtrechtUniversity/galaxy-tools-ibridges/pkgs/container/ibridges_browse), and is pulled automatically by Galaxy, from the specification in `ibridges_browse.xml`:
