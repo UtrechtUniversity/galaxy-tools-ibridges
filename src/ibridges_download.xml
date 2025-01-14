@@ -18,7 +18,7 @@
     ]]></command>
 
     <inputs>
-        <param name="irods_path" optional="false" type="text" label="iRODS path (source)" value="research-test-christine/MDS/hardcovers/hardcovers/">
+        <param name="irods_path" optional="false" type="text" label="iRODS path (source)" value="">
             <sanitizer sanitize="false" />
         </param>
     </inputs>
@@ -31,8 +31,10 @@
 
     <help><![CDATA[
         Tool downloads files from iRODS into a Galaxy collection.
+
         Specify the iRODS path of the file to download in 'iRODS path (source)'. This can be either an absolute iRODS path (including iRODS-home and -zone), or a relative path, omitting home and zone.
         Currently, this tool only downloads files (data objects), not folders (collections). To download mutiple files ar once, enter all paths, concatenated with a pipeline (|).
+        If you do not know the exact iRODS path, you can use the 'iBridges browser for iRODS' interactive tool to obtain the correct path.
     ]]></help>
 
     <citations>
