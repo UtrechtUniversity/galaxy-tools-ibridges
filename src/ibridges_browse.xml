@@ -29,9 +29,15 @@
         <data name="irods_path" format="txt" label="iRODS path"/>
     </outputs>
     <help><![CDATA[
-        Interactive tool for browsing through an iRODS instance.
+        **Interactive tool for browsing through an iRODS instance.**
         
-        When you run this tool, it becomes available as an interactive tool (tunning interactive tools can be accessed through Galaxy's User-,menu > Active Interactive Tools). It allows browsing through the iRODS instance specified in the settings, and either copy a path to the clipboard (by clicking a copy-icon) or copy it into the Galaxy-history (by clicking an arrow-icon). The tool automatically stops running when you close the browser-tab in which it is running.
+        When you run this tool, it becomes available as an interactive tool (running interactive tools can be accessed through Galaxy's menu: *User* > *Active Interactive Tools*). It allows browsing through the iRODS instance specified in the settings, and select a path by either:
+        
+        + copying it to the clipboard by clicking a copy-icon; or
+        
+        + copying it into the Galaxy-history by clicking an arrow-icon.
+        
+        The tool automatically shuts down when you close the browser-tab in which it is running.
     ]]></help>
     <citations>
      </citations>

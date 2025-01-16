@@ -27,10 +27,13 @@
 	    <data type="data" name="placeholder" label="iRODS upload" />
     </outputs>
     <help><![CDATA[
-        Tool upload files from a Galaxy collection into an iRODS folder.
+        **Tool for uploading files from a Galaxy collection into an iRODS folder**
 
-        Choose the Galaxy collection to upload, and specify the iRODS path (needs to be a folder / iRODS collection) to upload to. If your files are not in a collection yet, manually create a collection first.
-        If you do not know the exact iRODS path, you can use the 'iBridges browser for iRODS' interactive tool to obtain the correct path.
+        + Choose the Galaxy collection to upload, and specify the iRODS path to the target folder (collection).
+
+        + If your files are not in a collection yet, manually create a collection first.
+        
+        + If you do not know the exact iRODS path, you can use the 'iBridges browser for iRODS' interactive tool to obtain the correct path.
     ]]></help>
     <citations>
      </citations>

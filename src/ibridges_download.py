@@ -29,11 +29,22 @@ class iBridgesDownload:
                     irods_path=irods_path,
                     local_path=local_path,
                     overwrite=overwrite,
-                    copy_empty_folders=True,
+                    copy_empty_folders=False,
                     dry_run=False
                 )
+            elif irods_path.collection_exists():
+                for coll_or_obj in irods_path.walk(depth=1):
+                    if coll_or_obj.dataobject_exists():
+                        download(
+                            session=session,
+                            irods_path=coll_or_obj,
+                            local_path=local_path,
+                            overwrite=overwrite,
+                            copy_empty_folders=False,
+                            dry_run=False
+                        )
             else:
-                print(f"Skipped {item!r}: dataobject does not exist or path is not a dataobject")
+                print(f"Skipped {item!r}: not a dataobject or collection")
 
 
 if __name__=="__main__":
