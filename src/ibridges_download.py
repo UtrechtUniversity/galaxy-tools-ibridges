@@ -21,15 +21,20 @@ class iBridgesDownload:
 
         for item in irods_path.split(separator):
             irods_path = fix_irods_path(item, irods_env['irods_home'])
-            irods_path = IrodsPath(session, item)
-            download(
-                session=session,
-                irods_path=irods_path,
-                local_path=local_path,
-                overwrite=overwrite,
-                copy_empty_folders=True,
-                dry_run=False
-            )
+            irods_path = IrodsPath(session, irods_path)
+
+            if irods_path.dataobject_exists():
+                download(
+                    session=session,
+                    irods_path=irods_path,
+                    local_path=local_path,
+                    overwrite=overwrite,
+                    copy_empty_folders=True,
+                    dry_run=False
+                )
+            else:
+                print(f"Skipped {item!r}: dataobject does not exist or path is not a dataobject")
+
 
 if __name__=="__main__":
 

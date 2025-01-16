@@ -31,6 +31,8 @@ def get_irods_env():
 
 
 def fix_irods_path(irods_path, irods_home):
+    irods_path = irods_path.strip()
+    irods_home = irods_home.strip()
     # removing root slash if paths appear to be relative
     if irods_path[:len(irods_home)] != irods_home:
         irods_path = irods_path.lstrip('/')

@@ -18,7 +18,7 @@
     ]]></command>
 
     <inputs>
-        <param name="irods_path" optional="false" type="text" label="iRODS path (source)" value="">
+        <param name="irods_path" optional="false" type="text" label="iRODS path (source)">
             <sanitizer sanitize="false" />
         </param>
     </inputs>

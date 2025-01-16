@@ -14,6 +14,10 @@ class iBridgesUpload:
         self.irods_env = irods_env
         self.session = Session(irods_env=irods_env, password=password)
 
+    def check_upload_path(self, upload_path):
+        if not IrodsPath(self.session, upload_path).collection_exists():
+            raise NotADirectoryError(f"{irods_path!r} is not a collection (folder)")
+
     def upload_file(self,
                     irods_path,
                     local_path,
@@ -35,23 +39,27 @@ if __name__=="__main__":
 
     argparse = argparse.ArgumentParser()
     argparse.add_argument('--irods_path', type=str, required=True)
+    argparse.add_argument('--uploads_file', type=str, required=True)
     argparse.add_argument('--overwrite', action='store_true')
     args = argparse.parse_args()
 
     try:
 
         irods_env = get_irods_env()
-        tool_dir = os.getenv('TOOL_DIR', './')
+        # tool_dir = os.getenv('TOOL_DIR', './')
 
         ibu = iBridgesUpload(irods_env=irods_env,
                              password=os.getenv('IRODS_PASS', None).strip())
 
-        with open(f'{tool_dir}/files_to_upload.json') as f:
+        ibu.check_upload_path(args.irods_path)
+
+        # with open(f'{tool_dir}/files_to_upload.json') as f:
+        with open(args.uploads_file) as f:
             files = json.load(f)
 
         for path, name in files:
             local_path = path
-            irods_path = f"{args.irods_path.rstrip("/")}/{name.lstrip("/")}"
+            irods_path = f"{args.irods_path.strip().rstrip("/")}/{name.strip().lstrip("/")}"
 
             ibu.upload_file(
                 irods_path=irods_path,

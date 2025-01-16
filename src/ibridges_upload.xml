@@ -17,7 +17,7 @@
         #end for
         #silent f=open($__tool_directory__+"/files_to_upload.json", 'w')
         #silent json.dump($files, f)
-        python '$__tool_directory__/ibridges_upload.py' --irods_path '$irods_path' --overwrite
+        python '$__tool_directory__/ibridges_upload.py' --irods_path '$irods_path' --uploads_file '$__tool_directory__/files_to_upload.json' --overwrite
     ]]></command>
     <inputs>
         <param name="local_collection" type="data_collection" optional="false" label="Data collection (source)" />
