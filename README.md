@@ -1,21 +1,21 @@
-# Galaxy Project tools module for downloading, uploading & browsing iRODS
+# Galaxy Project tools module for downloading from, uploading to, and browsing iRODS
 
-__Galaxy iBridges download__ is a Galaxy tool that facilitates downloading of objects (files) from iRODS.
+__iBridges download from iRODS__ is a Galaxy tool that facilitates downloading of objects (files) from iRODS.
 
-__Galaxy iBridges upload__ is a Galaxy tool that facilitates uploading Galaxy collections to iRODS.
+__iBridges upload to iRODS__ is a Galaxy tool that facilitates uploading Galaxy collections to iRODS.
 
-__Galaxy iBridges browser__ is an interactive Galaxy tool that allows users to browse through an iRODS instance to locate objects and collections, and select them for use in a Galaxy workflow.
+__iBridges browser for iRODS__ is an interactive Galaxy tool that allows users to browse through an iRODS instance to locate objects and collections, and select them for use in a Galaxy workflow.
 
 The tools are named for [iBridges](https://github.com/UtrechtUniversity/iBridges), the client used for interaction with iRODS.
 
 ## What it does
-### iBridges download
-iBridges download takes an iRODS-path to (a) dataobject(s) as source, downloads the file(s), and creates a Galaxy dataset collection containing all downloaded files.
+### iBridges download from iRODS
+Tool for downloading files from iRODS into a Galaxy collection. Takes paths to one or more files (dataobjects), one or more folders (collections), or a combination, and downloads all files into the same Galaxy Collection.
 
-### iBridges upload
-iBridges upload a Galaxy collection to an iRODS-path a collection (directory).
+### iBridges upload to iRODS
+Tool for uploading files from a Galaxy collection into an iRODS folder.
 
-### iBridges browser
+### iBridges browser for iRODS
 iBridges browser launches as a [Galaxy Interactive Tool](https://training.galaxyproject.org/training-material/topics/admin/tutorials/interactive-tools/tutorial.html) that allows the user to browse the objects and collections in the iRODS instance through a web interface.
 
 When running an interactive tool, the interactive tool-icon (three gears) will appear in the Galaxy main menu, to the right of _User_. Clicking the icon opens a screen listing the interactive tools that are running. This can also be reached using the option _Active Interactive Tools_ in the _User_-item of the main menu. If the icon and the option in the User-menu aren't there, it means no interactive tools are running. If they appear briefly and then disappear, launching of the tool was unsuccesful.
@@ -59,7 +59,7 @@ preferences:
 
 This will create a section `Your iRODS account` with inputs for _Username_, _Data Access Password_, and _Config_ in the Galaxy user profile, in which users can store their credentials for accessing the appropriate iRODS instance. 
 
-<span style="color:red">**Please note: if you don't need the browse function, skip the changes to `config/galaxy.yml` and `config/job.yml` detailed below.**</span>
+<span style="color:red">**Please note: if you don't need the browse function, you can skip the changes to `config/galaxy.yml` and `config/job.yml` below.**</span>
 
 ### Changes to `galaxy.yml`
 The browse tool is an interactive tool (essentially a webserver communicating with the iRODS server, running in a Docker container). To enable the running of interactive tools, make sure the following settings are present in the  `galaxy` and `gravity` sections of `config/galaxy.yml` (change `my_galaxy_domain.com` to the domain of the actual Galaxy server):
