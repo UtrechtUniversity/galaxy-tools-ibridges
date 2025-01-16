@@ -31,7 +31,9 @@
     <help><![CDATA[
         **Interactive tool for browsing through an iRODS instance.**
         
-        When you run this tool, it becomes available as an interactive tool (running interactive tools can be accessed through Galaxy's menu: *User* > *Active Interactive Tools*). It allows browsing through the iRODS instance specified in the settings, and select a path by either:
+        When you run this tool, it becomes available as an interactive tool (running interactive tools can be accessed through Galaxy's menu: *User* > *Active Interactive Tools*). Click the name 'ibridges browser' to start the GUI.  Note that it can take a few seconds for the tool to start; its status (under *Job Info*) should be 'running' for it to be accessible.
+        
+        The tool allows you to browse through the iRODS instance specified in the settings, displaying all files (dataobjects) and folders (collections) you have access to. You can select a path by either:
         
         + copying it to the clipboard by clicking a copy-icon; or
         
