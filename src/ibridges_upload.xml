@@ -7,7 +7,6 @@
         <environment_variable name="IRODS_USER">$__user__.extra_preferences.get('irods_config|username', '')</environment_variable>
         <environment_variable name="IRODS_PASS">$__user__.extra_preferences.get('irods_config|password', '')</environment_variable>
         <environment_variable name="IRODS_ENV">$__user__.extra_preferences.get('irods_config|env', '')</environment_variable>
-        <environment_variable name="TOOL_DIR">$__tool_directory__</environment_variable>
     </environment_variables>
     <command detect_errors="exit_code"><![CDATA[
         #import json

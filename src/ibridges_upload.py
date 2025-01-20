@@ -46,14 +46,12 @@ if __name__=="__main__":
     try:
 
         irods_env = get_irods_env()
-        # tool_dir = os.getenv('TOOL_DIR', './')
 
         ibu = iBridgesUpload(irods_env=irods_env,
                              password=os.getenv('IRODS_PASS', None).strip())
 
         ibu.check_upload_path(args.irods_path)
 
-        # with open(f'{tool_dir}/files_to_upload.json') as f:
         with open(args.uploads_file) as f:
             files = json.load(f)
 
