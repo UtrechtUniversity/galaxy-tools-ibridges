@@ -57,7 +57,7 @@ if __name__=="__main__":
 
         for path, name in files:
             local_path = path
-            irods_path = f"{args.irods_path.strip().rstrip("/")}/{name.strip().lstrip("/")}"
+            irods_path = f"{args.irods_path.strip().rstrip('/')}/{name.strip().lstrip('/')}"
 
             ibu.upload_file(
                 irods_path=irods_path,
