@@ -38,6 +38,10 @@ class iBridgesBrowser:
             log.error(str(e))
             self.last_error = str(e)
 
+    def readable_size(self, bytes, units=[' bytes','KB','MB','GB','TB', 'PB', 'EB']):
+        """ Returns a human readable string representation of bytes """
+        return str(bytes) + units[0] if bytes < 1024 else self.readable_size(bytes>>10, units[1:])
+
     def read_path(self, remote_path):
         """
         Read all objects and collections in an iRODS path.
@@ -56,8 +60,13 @@ class iBridgesBrowser:
                 self.irods_path = self.irods_path.parent
 
             coll = get_collection(self.session, self.irods_path)
-            self.data_objects = [x.path for x in coll.data_objects]
+            # self.data_objects = [x.path for x in coll.data_objects]
+            self.data_objects = [{'path': x.path,
+                                  'create_time': x.create_time,
+                                  'modify_time': x.modify_time,
+                                  'size': self.readable_size(x.size)} for x in coll.data_objects]
             self.collections = [x.path for x in coll.subcollections if not x.path==str(self.irods_path)]
+
         except Exception as e:
             log.error(str(e))
             self.last_error = str(e)
@@ -157,14 +166,21 @@ if __name__ == '__main__':
     if not debug:
         log.setLevel(logging.ERROR)
 
-    irods_env = json.loads(desanitize(os.getenv('IRODS_ENV', '{}')))
-    irods_env['irods_user_name'] = os.getenv('IRODS_USER', None)
+    # irods_env = json.loads(desanitize(os.getenv('IRODS_ENV', '{}')))
+    # irods_env['irods_user_name'] = os.getenv('IRODS_USER', None)
+    # password = os.getenv('IRODS_PASS', None)
+
+    irods_env = json.loads('{ "irods_host": "its.data.uu.nl",  "irods_port": 1247, "irods_home": "/nluu12p/home", "irods_user_name": "m.d.schermer@uu.nl", "irods_zone_name": "nluu12p","irods_authentication_scheme": "pam", "irods_encryption_algorithm": "AES-256-CBC", "irods_encryption_key_size": 32, "irods_encryption_num_hash_rounds": 16, "irods_encryption_salt_size": 8, "irods_client_server_negotiation": "request_server_negotiation", "irods_client_server_policy": "CS_NEG_REQUIRE"}')
+    irods_env['irods_user_name'] = 'm.d.schermer@uu.nl'
+    password = 'haxD3n91bgCSvy4A6MYxvBO8Y857AJEl'
+
 
     # When changing value of TRANSPORT_PATH make sure to change to the same 
     # value in the Galaxy tool's XML file (default: /app/path)
     ibb = iBridgesBrowser(
         irods_env=irods_env,
-        password=os.getenv('IRODS_PASS', None),
+        # password=os.getenv('IRODS_PASS', None),
+        password=password,
         transport_path=os.getenv('TRANSPORT_PATH','/app/path'))
 
     app.run(host='0.0.0.0', port=int(os.getenv('FLASK_PORT', 5000)), debug=debug)
