@@ -34,8 +34,8 @@ p.breadcrumbs a {
 p.breadcrumbs a:hover {
     text-decoration: underline;
 }
-li.collection-link:hover {
-    background-color: rgb(184, 253, 253);
+li.collection-link:hover, li.objects:hover {
+    background-color: rgb(255, 249, 164);
 }
 table {
     border-collapse: collapse;
@@ -54,6 +54,10 @@ table.legend td:nth-child(1) {
 span.symbol {
     display: inline-block;
     width: 20px;
+}
+span.object.metadata {
+    color: rgb(128, 128, 128);
+    font-size: 0.7em;
 }
 ul {
     list-style-type: none ;

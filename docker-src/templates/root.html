@@ -77,11 +77,14 @@
             </li>
         {% endfor %}
         {% for obj in data.data_objects %}
-            <li>
+            <li class="objects">
                 <span class="symbol">&nbsp;</span>
-                <span class="object entry">{{ obj }}</span>
-                <span title="Copy path to clipboard" data-path="{{ obj }}" class="symbol copy" onclick="copyPath(this)">&#128203;</span>
-                <span title="Select path and quit" data-path="{{ obj }}" class="symbol use" onclick="usePath(this)">&#11157;</span>
+                <span class="object entry">{{ obj.path }}</span>
+                <span class="object metadata">
+                    <span title="object size">{{ obj.size }}</span> | <span title="last modified">{{ obj.modify_time }}</span>
+                </span>
+                <span title="Copy path to clipboard" data-path="{{ obj.path }}" class="symbol copy" onclick="copyPath(this)">&#128203;</span>
+                <span title="Select path and quit" data-path="{{ obj.path }}" class="symbol use" onclick="usePath(this)">&#11157;</span>
             </li>
         {% endfor %}
         {% if data.root_parts|length > 0 and (not data.collections and not data.data_objects) %}
