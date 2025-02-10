@@ -2,17 +2,29 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>iRODS browser</title>
+    {% if not data.shutdown %}
+        <title>iRODS browser - {{ data.irods_path }}</title>
+    {%else%}
+        <title>iRODS browser</title>
+    {%endif%}
 </head>
 <style>
 .small {
     font-size: 0.8em;
+}
+.error {
+    color: red;
 }
 </style>
 <body>
     <p>
         iRODS browser has stopped (you can close this window).
     </p>
+    {% if data.error %}
+    <p class="small error">
+        ERROR: {{ data.error }}
+    </p>
+    {% endif %}
     {% if not data.shutdown %}
     <p class="small">
         (selected path: {{ data.irods_path }})

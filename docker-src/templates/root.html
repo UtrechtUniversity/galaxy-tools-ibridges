@@ -2,7 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>iRODS browser</title>
+    {% if data.root %}
+        <title>iRODS browser - {{ data.root }}</title>
+    {%else%}
+        <title>iRODS browser</title>
+    {%endif%}
     <link rel="stylesheet" type="text/css" href="static/css/style.css">
     <script src="static/js/jquery-3.7.1.min.js" charset="utf-8"></script> 
 

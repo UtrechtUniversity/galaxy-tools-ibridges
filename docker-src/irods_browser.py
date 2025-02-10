@@ -24,9 +24,10 @@ class iBridgesBrowser:
                  transport_path='/app/path'
                  ):
         self.irods_env = irods_env
-        self.transport_path = transport_path
         self.last_error = None
         self.session = None
+        self.irods_path = None
+        self._transport_path = transport_path
         try:
             if not password or len(password)==0:
                 raise ValueError("Empty password")
@@ -39,6 +40,11 @@ class iBridgesBrowser:
         except Exception as e:
             log.error(str(e))
             self.last_error = str(e)
+
+    @property
+    def transport_path(self):
+        if self._transport_path and os.path.isfile(self._transport_path):
+            return self._transport_path
 
     def readable_size(self, bytes, units=[' bytes','KB','MB','GB','TB', 'PB', 'EB']):
         """ Returns a human readable string representation of bytes """
@@ -81,7 +87,7 @@ class iBridgesBrowser:
                 'collections': [],
                 'env': self.irods_env,
                 'last_error': self.last_error,
-                'transport_path': self.transport_path }
+                'transport_path': self._transport_path }
 
         if self.session:
             root = str(IrodsPath(self.session, '~'))
@@ -100,8 +106,16 @@ class iBridgesBrowser:
         return out
 
     def write_selected_path(self, path=None):
+        # File needs to exist so the reponsibility for creating it stays with
+        # the Galaxy Tool, and to make sure an error can be raised so the user
+        # can be made aware that the tol does not properly create the transport
+        # file (= text file containing the selected iRODS path)
+        if not self.transport_path:
+            log.error(f"Transport path {self._transport_path!r} not a file or file does not exist")
+            return
+
         # Write selected path to file that is read as the tool's output
-        with open(self.transport_path, 'w') as f:
+        with open(self._transport_path, 'w') as f:
             f.write(path if path is not None else str(self.irods_path))
 
 @app.route('/', methods=['GET'])
@@ -119,9 +133,11 @@ def select():
     """
     path = request.args.get('path')
     shutdown = request.args.get('shutdown')=='1'
+    error = None if ibb.transport_path else "Transport path not set, not a file, or file does not exist"
     response = app.response_class(
             response=render_template('server_down.html', 
                                      data={'shutdown': shutdown,
+                                           'error': error,
                                            'irods_path': path if path else ibb.irods_path}),
             status=200,
             mimetype='text/html'
