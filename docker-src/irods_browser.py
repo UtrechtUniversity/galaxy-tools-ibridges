@@ -28,6 +28,8 @@ class iBridgesBrowser:
         self.last_error = None
         self.session = None
         try:
+            if not password or len(password)==0:
+                raise ValueError("Empty password")
             # Start iRODS session
             self.session = Session(irods_env=self.irods_env, password=password)
             # Read remote root
