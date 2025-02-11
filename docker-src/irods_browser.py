@@ -2,6 +2,7 @@ import json
 import logging
 import os
 import signal
+from math import ceil
 from flask import Flask, render_template, request
 from ibridges.path import IrodsPath
 from ibridges.session import Session
@@ -12,6 +13,7 @@ app = Flask(__name__)
 
 debug = False
 ibb = None
+per_page = 20
 
 class iBridgesBrowser:
     """
@@ -100,8 +102,8 @@ class iBridgesBrowser:
             
             out['root'] = str(self.irods_path)
             out['root_parts'] = root_parts
-            out['data_objects'] = self.data_objects
             out['collections'] = self.collections
+            out['data_objects'] = self.data_objects
 
         return out
 
@@ -120,10 +122,19 @@ class iBridgesBrowser:
 
 @app.route('/', methods=['GET'])
 def root():
-    path = request.args.get('path')
-    if path:
-        ibb.read_path(path)
-    return render_template('root.html', data=ibb.get_output())
+    if request.args.get('path'):
+        ibb.read_path(request.args.get('path'))
+    page = int(request.args.get('page', default=1))
+    data = ibb.get_output()
+    data['paging'] = {
+        'collections': data['collections'][(page-1)*per_page:(page)*per_page],
+        'data_objects': data['data_objects'][max(((page-1)*per_page)-len(data['collections']),0):((page)*per_page)-len(data['collections'])],
+        'page': page,
+        'per_page': per_page,
+        'total_pages': ceil((len(data['collections']) + len(data['data_objects']))/per_page)
+    }
+
+    return render_template('root.html', data=data)
 
 @app.route('/select', methods=['GET'])
 def select():

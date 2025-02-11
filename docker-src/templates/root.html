@@ -8,12 +8,13 @@
         <title>iRODS browser</title>
     {%endif%}
     <link rel="stylesheet" type="text/css" href="static/css/style.css">
+    <link rel="icon" type="image/x-icon" href="static/css/favicon.ico">
     <script src="static/js/jquery-3.7.1.min.js" charset="utf-8"></script> 
-
 </head>
 <body>
     <script>
         var currentPath = "";
+        var currentPage = {{ data.paging.page }};
 
         function message(msg) {
             $('#msg').html(msg).show().fadeOut(1500);
@@ -46,7 +47,20 @@
             window.open("select?shutdown=1", "_self");
         }
 
-    </script>
+        function navigate(delta) {
+            const url = new URL(document.location.toString());
+            
+            if (url.searchParams.get('page')) {
+                new_page = parseInt(url.searchParams.get('page'))+parseInt(delta);
+            } else {
+                new_page = currentPage+parseInt(delta);
+            }
+
+            let new_params = new URLSearchParams({path: url.searchParams.get('path'), page: new_page});
+            window.location.search = new_params;
+        }
+
+</script>
 
     <table>
         <tr><td>Server:</td><td>{{ data.env.irods_host }}</td></tr>
@@ -63,6 +77,11 @@
     {% if data.root_parts|length > 0 %}
     <p class="breadcrumbs">
         {%- for part in data.root_parts -%}{%- if part[0]==data.root -%}<script>setCurrentPath('{{ part[0] }}');</script><span class="unlinked">{{ part[1] }}</span><span class="slash">/</span>{%- else -%}<a href="?path={{ part[0]|urlencode }}">{{ part[1] }}</a><span class="slash">/</span>{% endif %}{% endfor %}
+        <span class="object metadata" title="{{ data.collections|length }} collection(s) / {{data.data_objects|length}} objects(s)">
+            (<span>{{ data.collections|length }}</span>/<span>{{data.data_objects|length}}</span>)
+        </span>
+
+
         <span title="Copy path to clipboard" class="symbol copy" onclick="copyPath()">&#128203;</span>
         <span title="Select path and quit" data-path="{{ col }}" class="symbol use" onclick="usePath()">&#11157;</span>
     </p>
@@ -70,7 +89,8 @@
 
     <p class="collections">
         <ul>
-        {% for col in data.collections %}
+        {# for col in data.collections #}
+        {% for col in data.paging.collections %}
             <li class="collection-link">
                 <span class="symbol">&#128193;</span>
                 <span class="collection entry">
@@ -80,7 +100,8 @@
                 <span title="Select path and quit" data-path="{{ col }}" class="symbol use" onclick="usePath(this)">&#11157;</span>
             </li>
         {% endfor %}
-        {% for obj in data.data_objects %}
+        {# for obj in data.data_objects #}
+        {% for obj in data.paging.data_objects %}
             <li class="objects">
                 <span class="symbol">&nbsp;</span>
                 <span class="object entry">{{ obj.path }}</span>
@@ -91,10 +112,26 @@
                 <span title="Select path and quit" data-path="{{ obj.path }}" class="symbol use" onclick="usePath(this)">&#11157;</span>
             </li>
         {% endfor %}
-        {% if data.root_parts|length > 0 and (not data.collections and not data.data_objects) %}
+        {% if data.root_parts|length > 0 and ((data.collections|length + data.data_objects|length)==0) %}
             <li><span class="symbol">&nbsp;</span>(collection is empty)</li>
         {% endif %}
         </ul>
+
+        {% set has_prev=(data.paging.page > 1) %}
+        {% set has_next=(data.paging.per_page*data.paging.page)<(data.collections|length + data.data_objects|length) %}
+
+        {% if has_prev %}
+            <span onclick="navigate(-1)" class="navigate">&lt; <span class="prev">prev</span></span>
+        {% else %}
+            <span class="ghosted">&lt; <span class="prev">prev</span></span>
+        {% endif %}
+        ({{data.paging.page}}/{{data.paging.total_pages}})
+        {% if has_next %}
+            <span onclick="navigate(1)" class="navigate"><span class="next">next</span> &gt;</span>
+            {% else %}
+            <span class="ghosted"><span class="next">next</span> &gt;</span>
+        {% endif %}
+
     </p>
 
     <input type="button" value="quit" onclick="quit()"/> <span id="msg"></span>

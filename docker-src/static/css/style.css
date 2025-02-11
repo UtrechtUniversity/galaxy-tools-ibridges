@@ -4,8 +4,7 @@
 }
 body {
     color: #0c0c0c;
-    background-color: rgb(255, 250, 250);
-
+    background-color: rgb(246, 246, 246);
 }
 hr {
     width: 750px;
@@ -69,4 +68,17 @@ span.copy, span.use {
 }
 .error {
     color: red;
+}
+.navigate {
+    cursor: pointer;
+}
+.navigate .prev:hover,.navigate .next:hover {
+    text-decoration: underline;
+}
+.ghosted {
+    cursor: default;
+    color: #999;
+}
+.ghosted:hover {
+    text-decoration: none;
 }
