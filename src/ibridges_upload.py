@@ -44,11 +44,18 @@ if __name__=="__main__":
     args = argparse.parse_args()
 
     try:
+        password = os.getenv('IRODS_PASS', None)
+
+        if not password or len(password)==0:
+            raise ValueError("Empty password")
+
+        if not args.uploads_file or not os.path.isfile(args.uploads_file):
+            raise ValueError("Missing uploads file")
 
         irods_env = get_irods_env()
 
         ibu = iBridgesUpload(irods_env=irods_env,
-                             password=os.getenv('IRODS_PASS', None).strip())
+                             password=password)
 
         ibu.check_upload_path(args.irods_path)
 

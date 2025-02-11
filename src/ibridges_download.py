@@ -56,6 +56,11 @@ if __name__=="__main__":
     args = argparse.parse_args()
 
     try:
+        password = os.getenv('IRODS_PASS', None)
+
+        if not password or len(password)==0:
+            raise ValueError("Empty password")
+
         if not os.path.exists(args.local_path):
             os.makedirs(args.local_path)
 
@@ -64,7 +69,7 @@ if __name__=="__main__":
 
         iBridgesDownload(
             irods_env=irods_env,
-            password=os.getenv('IRODS_PASS', None),
+            password=password,
             irods_path=args.irods_path,
             separator=separator,
             local_path=args.local_path,
