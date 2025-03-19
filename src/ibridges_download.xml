@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <tool id="ibridges_download" name="iBridges download from iRODS" version="0.4.0" python_template_version="3.5" profile="21.05">
 
+    <description>downloads files to an iRODS instance</description>
+
     <requirements>
         <requirement type="package">ibridges</requirement>
     </requirements>
