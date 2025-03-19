@@ -20,7 +20,9 @@
     ]]></command>
     <inputs>
         <param name="local_collection" type="data_collection" optional="false" label="Data collection (source)" />
-        <param name="irods_path" type="text" optional="false" label="iRODS path (target)" value="" />
+        <param name="irods_path" type="text" optional="false" label="iRODS path (target)" value="">
+               <validator type="empty_field"/>
+        </param>
         <param name="overwrite_flag" type="boolean" optional="false" label="Overwrite?" checked="true" truevalue="--overwrite"  falsevalue="" />
     </inputs>
     <outputs>

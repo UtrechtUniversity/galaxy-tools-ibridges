@@ -19,6 +19,7 @@
     <inputs>
         <param name="irods_path" optional="false" type="text" label="iRODS path (source)">
             <sanitizer sanitize="false" />
+            <validator type="empty_field"/>
         </param>
     </inputs>
 
