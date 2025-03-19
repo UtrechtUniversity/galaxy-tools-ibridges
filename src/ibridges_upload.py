@@ -37,11 +37,11 @@ class iBridgesUpload:
 
 if __name__=="__main__":
 
-    argparse = argparse.ArgumentParser()
-    argparse.add_argument('--irods_path', type=str, required=True)
-    argparse.add_argument('--uploads_file', type=str, required=True)
-    argparse.add_argument('--overwrite', action='store_true')
-    args = argparse.parse_args()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--irods_path', type=str, required=True)
+    parser.add_argument('--uploads_file', type=str, required=True)
+    parser.add_argument('--overwrite', action='store_true')
+    args = parser.parse_args()
 
     try:
         password = os.getenv('IRODS_PASS', None)
