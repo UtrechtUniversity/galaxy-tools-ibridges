@@ -1,27 +1,19 @@
-# Galaxy Project tools module for downloading from, uploading to, and browsing iRODS
+# Galaxy Project tool module for downloading from, uploading to, and browsing iRODS
 
-__iBridges download from iRODS__ is a Galaxy tool that facilitates downloading of objects (files) and collections (folders) from iRODS.
+This Galaxy Project tool module contains three tools:
 
-__iBridges upload to iRODS__ is a Galaxy tool that facilitates uploading Galaxy files and collections to iRODS.
++ __iBridges download from iRODS__ , a Galaxy tool for downloading files and folders from iRODS into a Galaxy collection. Takes paths to one or more files (dataobjects), one or more folders (collections), or a combination, and downloads all files into the same Galaxy collection.
 
-__iBridges browser for iRODS__ is an interactive Galaxy tool that allows users to browse through an iRODS instance to locate objects and collections, and select them for use in a Galaxy workflow.
++ __iBridges upload to iRODS__, a Galaxy Tool for uploading files or collections from Galaxy into an iRODS folder.
 
-The tools are named for [iBridges](https://github.com/UtrechtUniversity/iBridges), the client used for interaction with iRODS.
++ __iBridges browser for iRODS__ , an Galaxy tool that allows users to browse through an iRODS instance to locate objects and collections, and select them for use in a Galaxy workflow. The tool launches as a [Galaxy Interactive Tool](https://training.galaxyproject.org/training-material/topics/admin/tutorials/interactive-tools/tutorial.html), allowing the user to browse an iRODS instance through a separate web interface.
 
-## What it does
-### iBridges download from iRODS
-Tool for downloading files and folders from iRODS into a Galaxy collection. Takes paths to one or more files (dataobjects), one or more folders (collections), or a combination, and downloads all files into the same Galaxy collection.
-
-### iBridges upload to iRODS
-Tool for uploading files or collections from Galaxy into an iRODS folder.
-
-### iBridges browser for iRODS
-iBridges browser launches as a [Galaxy Interactive Tool](https://training.galaxyproject.org/training-material/topics/admin/tutorials/interactive-tools/tutorial.html) that allows the user to browse the objects and collections in the iRODS instance through a web interface.
+The tools are named for [iBridges](https://github.com/UtrechtUniversity/iBridges), the library used for interacting with iRODS.
 
 ## Installation
 The three tools are available in the Galaxy Toolshed as a single module called 'ibridges' ([Toolshed link](https://toolshed.g2.bx.psu.edu/repository?repository_id=3976454f355048d6)), and can be installed in a running Galaxy instance via _Admin > Tool Management > Install and Uninstall_ (search for 'ibridges').
 
-Currenly the tools can work with only one iRODS instance per installation. 
+Currenly the tools work with only one iRODS instance per Galaxy installation. 
 
 ## Galaxy configuration
 ### Changes to `user_preferences_extra_conf.yml`
