@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <tool id="ibridges_download" name="iBridges download from iRODS" version="0.4.0" python_template_version="3.5" profile="21.05">
 
+    <description>downloads files to an iRODS instance</description>
+
     <requirements>
         <requirement type="package">ibridges</requirement>
     </requirements>
@@ -19,6 +21,7 @@
     <inputs>
         <param name="irods_path" optional="false" type="text" label="iRODS path (source)">
             <sanitizer sanitize="false" />
+            <validator type="empty_field"/>
         </param>
     </inputs>
 
@@ -38,6 +41,12 @@
         - If you input a folder (collection), the tool will download all files in that folder, but will not traverse the entire tree (will not descend into any subfolders and download files from there as well).
         
         - All downloaded files will be put into the same Galaxy Collection, without any hierarchy. Avoid downloading identically named files from different iRODS-locations at the same time.
+
+        **Be aware:** this tool requires a working iRODS account. Username, data access password, and server configuration can be
+        specified in the 'Manage Information' screen, accessed via: *User > Preferences > Manage Information*.
+        
+        If there is no section 'Your iRODS account' in the 'Manage Information' screen, follow the configuration instructions found here:
+        https://github.com/UtrechtUniversity/galaxy-tools-ibridges/tree/main?tab=readme-ov-file#galaxy-configuration
     ]]></help>
 
     <citations>

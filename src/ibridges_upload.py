@@ -37,11 +37,11 @@ class iBridgesUpload:
 
 if __name__=="__main__":
 
-    argparse = argparse.ArgumentParser()
-    argparse.add_argument('--irods_path', type=str, required=True)
-    argparse.add_argument('--uploads_file', type=str, required=True)
-    argparse.add_argument('--overwrite', action='store_true')
-    args = argparse.parse_args()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--irods_path', type=str, required=True)
+    parser.add_argument('--uploads_file', type=str, required=True)
+    parser.add_argument('--overwrite', action='store_true')
+    args = parser.parse_args()
 
     try:
         password = os.getenv('IRODS_PASS', None)
@@ -62,8 +62,7 @@ if __name__=="__main__":
         with open(args.uploads_file) as f:
             files = json.load(f)
 
-        for path, name in files:
-            local_path = path
+        for local_path, name in files:
             irods_path = f"{args.irods_path.strip().rstrip('/')}/{name.strip().lstrip('/')}"
 
             ibu.upload_file(
