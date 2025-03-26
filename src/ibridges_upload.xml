@@ -9,34 +9,77 @@
         <environment_variable name="IRODS_PASS">$__user__.extra_preferences.get('irods_config|password', '')</environment_variable>
         <environment_variable name="IRODS_ENV">$__user__.extra_preferences.get('irods_config|env', '')</environment_variable>
     </environment_variables>
-    <command detect_errors="exit_code"><![CDATA[
+    <command detect_errors="exit_code">
         #import json
         #set $files = []
-        #for $i in $range(len($local_collection.keys()))
-        #silent $files.append(($local_collection[$i].false_path, $local_collection[$i].name)) 
-        #end for
+
+        #if $input_type == "data":
+
+            #silent $files.append(($local_data.false_path, $local_data.element_identifier))
+
+        #elif $input_type == "collection":
+
+            #for $i in $range(len($local_collection.keys()))
+
+                #silent $files.append(($local_collection[$i].false_path, $local_collection[$i].name)) 
+
+            #end for
+
+        #else:
+
+            echo 'unknown input type: $input_type'
+            exit 1
+
+        #end if
+
         #silent f=open($__tool_directory__+"/files_to_upload.json", 'w')
         #silent json.dump($files, f)
+
         python '$__tool_directory__/ibridges_upload.py' --irods_path '$irods_path' --uploads_file '$__tool_directory__/files_to_upload.json' $overwrite_flag
-    ]]></command>
+
+    </command>
     <inputs>
-        <param name="local_collection" type="data_collection" optional="false" label="Data collection (source)" />
+
+        <conditional name="input_type_conditional">
+            <param name="input_type" type="select" label="Choose the source type">
+                <option value="data">File</option>
+                <option value="collection" selected="true">Collection</option>
+            </param>
+            <when value="data">
+                <param name="local_data" type="data" optional="false" label="File" />
+            </when>
+            <when value="collection">
+                <param name="local_collection" type="data_collection" optional="false" label="Collection" />
+            </when>
+        </conditional>
+            
         <param name="irods_path" type="text" optional="false" label="iRODS path (target)" value="">
                <validator type="empty_field"/>
         </param>
         <param name="overwrite_flag" type="boolean" optional="false" label="Overwrite?" checked="true" truevalue="--overwrite"  falsevalue="" />
+
     </inputs>
     <outputs>
-	    <data type="data" name="placeholder" label="iRODS upload" />
+	    <data type="data" name="placeholder" label="iRODS upload (${$input_type})" />
     </outputs>
     <help><![CDATA[
-        **Tool for uploading files from a Galaxy collection into an iRODS folder**
+        **Tool for uploading files from a Galaxy file or collection to an iRODS folder**
 
-        + Choose the Galaxy collection to upload, and specify the iRODS path to the target folder (collection).
+        1. Choose the source type, File or Collection.
 
-        + If your files are not in a collection yet, manually create a collection first.
+        2. Select the File or Collection you want to upload.
+
+        3. Specify the target iRODS path (if you do not know the exact iRODS path, you can use the 'iBridges browser for iRODS' interactive tool to obtain the correct path).
+
+        4. Set the appropriate overwrite flag.
+
+        5. Click 'Run Tool'
+
+        **Be aware:** this tool requires a working iRODS account. Username, data access password, and server configuration can be
+        specified in the 'Manage Information' screen, accessed via: *User > Preferences > Manage Information*.
         
-        + If you do not know the exact iRODS path, you can use the 'iBridges browser for iRODS' interactive tool to obtain the correct path.
+        If there is no section 'Your iRODS account' in the 'Manage Information' screen, follow the configuration instructions found here:
+        https://github.com/UtrechtUniversity/galaxy-tools-ibridges/tree/main?tab=readme-ov-file#galaxy-configuration
     ]]></help>
     <citations>
      </citations>

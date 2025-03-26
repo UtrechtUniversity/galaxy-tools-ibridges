@@ -62,8 +62,7 @@ if __name__=="__main__":
         with open(args.uploads_file) as f:
             files = json.load(f)
 
-        for path, name in files:
-            local_path = path
+        for local_path, name in files:
             irods_path = f"{args.irods_path.strip().rstrip('/')}/{name.strip().lstrip('/')}"
 
             ibu.upload_file(
