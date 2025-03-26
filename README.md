@@ -1,8 +1,8 @@
 # Galaxy Project tools module for downloading from, uploading to, and browsing iRODS
 
-__iBridges download from iRODS__ is a Galaxy tool that facilitates downloading of objects (files) from iRODS.
+__iBridges download from iRODS__ is a Galaxy tool that facilitates downloading of objects (files) and collections (folders) from iRODS.
 
-__iBridges upload to iRODS__ is a Galaxy tool that facilitates uploading Galaxy collections to iRODS.
+__iBridges upload to iRODS__ is a Galaxy tool that facilitates uploading Galaxy files and collections to iRODS.
 
 __iBridges browser for iRODS__ is an interactive Galaxy tool that allows users to browse through an iRODS instance to locate objects and collections, and select them for use in a Galaxy workflow.
 
@@ -10,29 +10,18 @@ The tools are named for [iBridges](https://github.com/UtrechtUniversity/iBridges
 
 ## What it does
 ### iBridges download from iRODS
-Tool for downloading files from iRODS into a Galaxy collection. Takes paths to one or more files (dataobjects), one or more folders (collections), or a combination, and downloads all files into the same Galaxy Collection.
+Tool for downloading files and folders from iRODS into a Galaxy collection. Takes paths to one or more files (dataobjects), one or more folders (collections), or a combination, and downloads all files into the same Galaxy collection.
 
 ### iBridges upload to iRODS
-Tool for uploading files from a Galaxy collection into an iRODS folder.
+Tool for uploading files or collections from Galaxy into an iRODS folder.
 
 ### iBridges browser for iRODS
 iBridges browser launches as a [Galaxy Interactive Tool](https://training.galaxyproject.org/training-material/topics/admin/tutorials/interactive-tools/tutorial.html) that allows the user to browse the objects and collections in the iRODS instance through a web interface.
 
-When running an interactive tool, the interactive tool-icon (three gears) will appear in the Galaxy main menu, to the right of _User_. Clicking the icon opens a screen listing the interactive tools that are running. This can also be reached using the option _Active Interactive Tools_ in the _User_-item of the main menu. If the icon and the option in the User-menu aren't there, it means no interactive tools are running. If they appear briefly and then disappear, launching of the tool was unsuccesful.
-
-Next, open the tool by clicking 'ibridges browser' in the Active Interactive Tools-list (if the link isn't clickable, the tool is still starting). A new tab will open with a simple web page listing the dataobjects and collections in the user's home folder for the iRODS instance. Navigate through the instance by clicking collections' names, and the links in the breadcrumb path.
-
-To select a path as output for the module, navigate to the appropriate collection and click the 'select'-button. The interactive tool will terminate, signalling to Galaxy that exectution of the workflow can continue. The selected path will be available as the module output parameter 'iRODS path' (this will take a few seconds).
-Alternatively, you can also copy the path without quitting to your computer's clipboard by clicking 'copy'.
-To quit without selecting a path, click 'quit' or close the page; the value of the 'iRODS path' parameter will be None.
-
-Please note that the tools' web page cannot close itself; close it by hand once you're done.
-
-## Installing
+## Installation
 The three tools are available in the Galaxy Toolshed as a single module called 'ibridges', and can be installed via the Toolshed ([Toolshed link](https://toolshed.g2.bx.psu.edu/repository?repository_id=3976454f355048d6)).
 
 Currenly the tools can work with only one iRODS instance per installation. 
-
 
 ## Galaxy configuration
 ### Changes to `user_preferences_extra_conf.yml`
@@ -111,6 +100,17 @@ Copy the appropriate server configuration from the section [Step 2. Configuring 
 
 ## iRODS access 
 Make sure users using the tools have access to the iRODS instance specified in the iRODS environment Users must save their username (e-mail address) and Data Access Password in the appropriate inputs for `Your iRODS account`. Every time one of the tools needs to access iRODS, it automatically reads the credentials from the user's personal profile, and uses them to log in. Be aware that Data Access Passwords have a limited lifespan; if a DAP has expired, the tools will fail, and you will see an error message in the error output.
+
+## Running the iBridges browser for iRODS
+When running an interactive tool, the interactive tool-icon (three gears) will appear in the Galaxy main menu, to the right of _User_. Clicking the icon opens a screen listing the interactive tools that are running. This can also be reached using the option _Active Interactive Tools_ in the _User_-item of the main menu. If the icon and the option in the User-menu aren't there, it means no interactive tools are running. If they appear briefly and then disappear, launching of the tool was unsuccesful.
+
+Next, open the tool by clicking 'ibridges browser' in the Active Interactive Tools-list (if the link isn't clickable, the tool is still starting). A new tab will open with a simple web page listing the dataobjects and collections in the user's home folder for the iRODS instance. Navigate through the instance by clicking collections' names, and the links in the breadcrumb path.
+
+To select a path as output for the module, navigate to the appropriate collection and click the 'select'-button. The interactive tool will terminate, signalling to Galaxy that exectution of the workflow can continue. The selected path will be available as the module output parameter 'iRODS path' (this will take a few seconds).
+Alternatively, you can also copy the path without quitting to your computer's clipboard by clicking 'copy'.
+To quit without selecting a path, click 'quit' or close the page; the value of the 'iRODS path' parameter will be None.
+
+Please note that the tools' web page cannot close itself; close it by hand once you're done.
 
 ## Building a local copy of the browser container
 Galaxy iBridges browse uses a Docker container which runs in Galaxy's own Docker-environment. It can be pulled from [Utrecht University's package registry](https://github.com/UtrechtUniversity/galaxy-tools-ibridges/pkgs/container/ibridges_browse), and is pulled automatically by Galaxy, from the specification in `ibridges_browse.xml`:
